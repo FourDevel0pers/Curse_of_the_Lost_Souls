@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public float health;
     public float moveSpeed = 5.0f; 
     public float sprintMultiplier = 1.5f;  // Прискорення
     public float jumpHeight = 1.5f;        // Висота стрибка
@@ -64,5 +65,16 @@ public class PlayerController : MonoBehaviour
             GameObject projectile = Instantiate(projectilePrefab, transform.position + Camera.main.transform.forward, Quaternion.identity);
             projectile.transform.forward = Camera.main.transform.forward;
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if (health <= 0) Die(); 
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 }
