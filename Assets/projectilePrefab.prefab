@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4379774370001013509}
   - component: {fileID: 120168415032070245}
   - component: {fileID: 1670136359689058472}
+  - component: {fileID: 7299225138604810141}
   m_Layer: 0
   m_Name: projectilePrefab
   m_TagString: Untagged
@@ -113,10 +114,37 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3735654492458966376}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba16331248e44b24bb9d965a6f77fed4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
   lifetime: 2
+  damage: 10
+--- !u!54 &7299225138604810141
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3735654492458966376}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

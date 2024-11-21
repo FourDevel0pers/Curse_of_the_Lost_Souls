@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5.0f; 
-    public float sprintMultiplier = 1.5f;  // Прискорення
-    public float jumpHeight = 1.5f;        // Висота стрибка
-    public GameObject projectilePrefab;
+    public float health;
+    public float moveSpeed = 5.0f;
+    public float sprintMultiplier = 1.5f;
+    public float jumpHeight = 1.5f;
 
     private CharacterController controller;
     private Vector3 velocity;
@@ -23,16 +21,15 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         MovePlayer();
-        ShootProjectile();
     }
 
     private void MovePlayer()
     {
-        isGrounded = controller.isGrounded;  
+        isGrounded = controller.isGrounded;
 
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f; 
+            velocity.y = -2f;
         }
 
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -52,17 +49,18 @@ public class PlayerController : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
         }
 
-        // Додаємо гравітацію
         velocity.y += Physics.gravity.y * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
 
-    private void ShootProjectile()
+    public void TakeDamage(float damage)
     {
-        if (Input.GetButtonDown("Fire1")) 
-        {
-            GameObject projectile = Instantiate(projectilePrefab, transform.position + Camera.main.transform.forward, Quaternion.identity);
-            projectile.transform.forward = Camera.main.transform.forward;
-        }
+        health -= damage;
+        if (health <= 0) Die();
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 }

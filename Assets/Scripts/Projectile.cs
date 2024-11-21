@@ -1,24 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
-{
-    public float speed = 20f; 
-    public float lifetime = 2f;
+{  
+    public float lifetime = 2f;    
+    public float damage = 10f;     
 
     private void Start()
     {
         Destroy(gameObject, lifetime);
     }
-
-    private void Update()
-    {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject); 
+        if (collision.collider.CompareTag("Enemy"))
+        {
+            EnemyController enemy = collision.collider.GetComponent<EnemyController>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage); 
+            }
+        }
+
+        Destroy(gameObject);
     }
 }

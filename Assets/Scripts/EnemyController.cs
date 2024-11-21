@@ -1,4 +1,3 @@
-using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,6 +12,7 @@ public enum EnemyState
 public class EnemyController : MonoBehaviour
 {
     [Header("Stats")]
+    public float health;
     [SerializeField] private EnemyData enemyData;
     [SerializeField] private EnemyState enemyState;
     public Transform attackPoint;
@@ -21,7 +21,6 @@ public class EnemyController : MonoBehaviour
     [HideInInspector] public PlayerController player;
     private NavMeshAgent agent;
     private Animator animator;
-    private LevelController level;
     private Vector3 target;
     private Transform distraction;
     private bool isAttacking = false;
@@ -32,13 +31,13 @@ public class EnemyController : MonoBehaviour
     private void Start()
     {
         curWaypointIndex = Random.Range(0, waypoints.childCount);
-        level = FindFirstObjectByType<LevelController>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         player = FindFirstObjectByType<PlayerController>();
         agent.speed = enemyData.walkingSpeed;
         target = waypoints.GetChild(curWaypointIndex).position;
         agent.SetDestination(target);
+        health = enemyData.health;
     }
 
     private void FixedUpdate()
@@ -121,9 +120,9 @@ public class EnemyController : MonoBehaviour
 
     private void CallEnemies()
     {
-        foreach (Transform enemy in level.enemies)
+        foreach (EnemyController enemy in FindObjectsByType<EnemyController>(FindObjectsSortMode.None))
         {
-            enemy.GetComponent<EnemyController>().StartChasing();
+            enemy.StartChasing();
         }
     }
 
@@ -152,9 +151,20 @@ public class EnemyController : MonoBehaviour
         Collider[] colliders = Physics.OverlapSphere(attackPoint.position, enemyData.attackRange);
         foreach (Collider collider in colliders)
         {
-            if (collider.CompareTag("Player")) player.Die();
+            if (collider.CompareTag("Player")) player.TakeDamage(enemyData.damage);
         }
         yield return new WaitForSeconds(enemyData.attackDelay);
         if (isAttacking) StartCoroutine(Attack());
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if (health <= 0) Die();
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 }
