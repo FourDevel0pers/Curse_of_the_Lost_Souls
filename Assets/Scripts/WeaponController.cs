@@ -10,16 +10,34 @@ public class WeaponController : MonoBehaviour
     public float spreadIncrease = 0.5f;      
     public float maxSpread = 5f;            
     public float recoverySpeed = 2f;        
+    public int maxAmmo = 30;                
+    private int currentAmmo;                
+    public float reloadTime = 2f;           
+    private bool isReloading = false;       
     private float currentSpread = 0.0f;     
     private float nextFireTime = 0.0f;       
     public float fireRate = 0.1f;           
 
+    void Start()
+    {
+        currentAmmo = maxAmmo;
+    }
+
     void Update()
     {
+        if (isReloading) return; 
+
         if (Input.GetButton("Fire1") && Time.time >= nextFireTime)
         {
-            nextFireTime = Time.time + fireRate;  
-            ShootProjectile();                    
+            if (currentAmmo > 0)
+            {
+                nextFireTime = Time.time + fireRate;  
+                ShootProjectile();                    
+            }
+            else
+            {
+                StartCoroutine(Reload());
+            }
         }
 
         if (!Input.GetButton("Fire1") && currentSpread > 0)
@@ -30,6 +48,7 @@ public class WeaponController : MonoBehaviour
 
     private void ShootProjectile()
     {
+        currentAmmo--; 
         currentSpread = Mathf.Min(currentSpread + spreadIncrease, maxSpread);
         Vector3 shootDirection = Camera.main.transform.forward;
         shootDirection.x += Random.Range(-currentSpread, currentSpread) * Mathf.Deg2Rad;
@@ -37,5 +56,13 @@ public class WeaponController : MonoBehaviour
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         projectile.transform.forward = shootDirection.normalized;
         projectile.GetComponent<Rigidbody>().velocity = projectile.transform.forward * projectileSpeed;
+    }
+
+    private IEnumerator Reload()
+    {
+        isReloading = true;
+        yield return new WaitForSeconds(reloadTime);
+        currentAmmo = maxAmmo; 
+        isReloading = false;
     }
 }

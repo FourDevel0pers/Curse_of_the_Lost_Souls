@@ -765,7 +765,7 @@ MonoBehaviour:
   firePoint: {fileID: 1386729436}
   spreadIncrease: 0.5
   maxSpread: 5
-  recoverySpeed: 2
+  recoverySpeed: 5
   fireRate: 0.1
 --- !u!1 &1274143439
 GameObject:
