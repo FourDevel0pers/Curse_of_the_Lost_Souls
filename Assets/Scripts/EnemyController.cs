@@ -18,7 +18,6 @@ public class EnemyController : MonoBehaviour
     public Transform attackPoint;
     public Transform waypoints;
 
-    [HideInInspector] public PlayerController player;
     private NavMeshAgent agent;
     private Animator animator;
     private Vector3 target;
@@ -33,7 +32,6 @@ public class EnemyController : MonoBehaviour
         curWaypointIndex = Random.Range(0, waypoints.childCount);
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        player = FindFirstObjectByType<PlayerController>();
         agent.speed = enemyData.walkingSpeed;
         target = waypoints.GetChild(curWaypointIndex).position;
         agent.SetDestination(target);
@@ -43,11 +41,7 @@ public class EnemyController : MonoBehaviour
     private void FixedUpdate()
     {
         if (isStunned) return;
-        if (distraction)
-        {
-            if (Vector3.Distance(attackPoint.position, distraction.position) < enemyData.attackRange) StartCoroutine(Stun(3, "Inspect"));
-            return;
-        }
+
         switch (enemyState)
         {
             case EnemyState.Patroling:
@@ -73,77 +67,44 @@ public class EnemyController : MonoBehaviour
                     agent.SetDestination(target);
                 }
                 break;
+
             case EnemyState.Chasing:
-                if (Vector3.Distance(attackPoint.position, player.transform.position) < enemyData.attackRange)
-                    enemyState = EnemyState.Attacking;
-                agent.SetDestination(player.transform.position);
-                break;
-            case EnemyState.Attacking:
-                Rotate(player.transform.position - transform.position, transform);
-                if (Vector3.Distance(attackPoint.position, player.transform.position) < enemyData.attackRange)
+                GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+                if (playerObject != null)
                 {
-                    if (!isAttacking && !isReloading)
+                    if (Vector3.Distance(attackPoint.position, playerObject.transform.position) < enemyData.attackRange)
+                        enemyState = EnemyState.Attacking;
+                    agent.SetDestination(playerObject.transform.position);
+                }
+                break;
+
+            case EnemyState.Attacking:
+                GameObject attackingPlayer = GameObject.FindGameObjectWithTag("Player");
+                if (attackingPlayer != null)
+                {
+                    Rotate(attackingPlayer.transform.position - transform.position, transform);
+                    if (Vector3.Distance(attackPoint.position, attackingPlayer.transform.position) < enemyData.attackRange)
                     {
-                        isAttacking = true;
-                        agent.isStopped = true;
-                        StartCoroutine(Attack());
+                        if (!isAttacking && !isReloading)
+                        {
+                            isAttacking = true;
+                            agent.isStopped = true;
+                            StartCoroutine(Attack());
+                        }
+                    }
+                    else if (isAttacking)
+                    {
+                        isAttacking = false;
+                        agent.isStopped = false;
+                        StopCoroutine(Attack());
+                        enemyState = EnemyState.Chasing;
                     }
                 }
-                else if (isAttacking)
-                {
-                    isAttacking = false;
-                    agent.isStopped = false;
-                    StopCoroutine(Attack());
-                    enemyState = EnemyState.Chasing;
-                }
                 return;
+
             default:
                 return;
         }
-
-        //if (!animator.GetBool("Move") && !isAttacking) animator.SetBool("Move", true);
-    }
-
-    public void GoToDistraction(Transform distractionObject)
-    {
-        if (enemyState != EnemyState.Patroling) return;
-        distraction = distractionObject;
-        agent.SetDestination(distraction.position);
-    }
-
-    public void StartChasing()
-    {
-        if (enemyState != EnemyState.Patroling) return;
-        agent.speed = enemyData.runningSpeed;
-        enemyState = EnemyState.Chasing;
-    }
-
-    private void CallEnemies()
-    {
-        foreach (EnemyController enemy in FindObjectsByType<EnemyController>(FindObjectsSortMode.None))
-        {
-            enemy.StartChasing();
-        }
-    }
-
-    private void Rotate(Vector3 rotate, Transform objectOfRotation)
-    {
-        rotate.y = 0;
-        Quaternion rotation = Quaternion.LookRotation(rotate, Vector3.up);
-        objectOfRotation.rotation = Quaternion.Slerp(objectOfRotation.rotation, rotation, Time.deltaTime * agent.angularSpeed);
-    }
-
-
-    public IEnumerator Stun(float duration, string animationTriggerName = "Stun")
-    {
-        StopCoroutine(Stun(0));
-        //animator.SetTrigger(animationTriggerName);
-        isStunned = true;
-        agent.isStopped = true;
-        yield return new WaitForSeconds(duration);
-        isStunned = false;
-        agent.isStopped = false;
-        agent.SetDestination(target);
     }
 
     private IEnumerator Attack()
@@ -151,7 +112,14 @@ public class EnemyController : MonoBehaviour
         Collider[] colliders = Physics.OverlapSphere(attackPoint.position, enemyData.attackRange);
         foreach (Collider collider in colliders)
         {
-            if (collider.CompareTag("Player")) player.TakeDamage(enemyData.damage);
+            if (collider.CompareTag("Player"))
+            {
+                PlayerController player = collider.GetComponent<PlayerController>();
+                if (player != null)
+                {
+                    player.TakeDamage(enemyData.damage);
+                }
+            }
         }
         yield return new WaitForSeconds(enemyData.attackDelay);
         if (isAttacking) StartCoroutine(Attack());
@@ -166,5 +134,27 @@ public class EnemyController : MonoBehaviour
     private void Die()
     {
         Destroy(gameObject);
+    }
+
+    private void StartChasing()
+    {
+        if (enemyState != EnemyState.Patroling) return;
+        agent.speed = enemyData.runningSpeed;
+        enemyState = EnemyState.Chasing;
+    }
+
+    private void CallEnemies()
+    {
+        foreach (EnemyController enemy in FindObjectsOfType<EnemyController>())
+        {
+            enemy.StartChasing();
+        }
+    }
+
+    private void Rotate(Vector3 rotate, Transform objectOfRotation)
+    {
+        rotate.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(rotate, Vector3.up);
+        objectOfRotation.rotation = Quaternion.Slerp(objectOfRotation.rotation, rotation, Time.deltaTime * agent.angularSpeed);
     }
 }

@@ -1,127 +1,176 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
+[System.Serializable]
+public class PlayerStats
+{
+    public float health;
+
+    public float acceleration;
+    public float walkingSpeed;
+    public float runningSpeed;
+    public float jumpForce;
+    public float throwingForce;
+
+    public float sensitivity;
+    public float minCameraAngle;
+    public float maxCameraAngle;
+
+    public float reachingDistance;
+    public LayerMask interactionLayer;
+}
+
+[System.Serializable]
+public class PlayerResources
+{
+    public int coal;
+    public int wood;
+}
+
+[System.Serializable]
+public class Controls
+{
+    public KeyCode interact;
+    public KeyCode run;
+    public KeyCode drop;
+}
 
 public class PlayerController : MonoBehaviour
 {
-    public float health;
-    public float moveSpeed = 5.0f;
-    public float sprintMultiplier = 1.5f; 
-    public float jumpHeight = 1.5f;        
-    public GameObject projectilePrefab;
+    public PlayerStats playerStats;
+    public PlayerResources resources;
+    public Controls controls;
 
-    private CharacterController controller;
-    private Vector3 velocity;
-    private bool isGrounded;
+    public WeaponController curWeapon;
+    public Transform weaponPoint;
 
-    // Параметри для підйому предметів
-    public Transform holdPoint; // Точка, де тримається предмет
-    public float pickUpRange = 3f; // Дальність захоплення
-    public float throwForce = 10f; // Сила кидка
-    private GameObject heldObject;
+    [HideInInspector] public bool isGrounded = false;
+    [HideInInspector] public GameObject interactionObject;
+
+    private float health;
+    private float speed;
+    Camera mainCamera;
+    Rigidbody rb;
 
     private void Start()
     {
-        controller = GetComponent<CharacterController>();
-        Cursor.lockState = CursorLockMode.Locked;
+        health = playerStats.health;
+        speed = playerStats.walkingSpeed;
+        mainCamera = Camera.main;
+        rb = GetComponent<Rigidbody>();
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
     {
-        MovePlayer();
-        ShootProjectile();
-        HandlePickUpAndThrow();
+        if (Input.GetKeyDown(controls.run)) speed = playerStats.runningSpeed;
+        if (Input.GetKeyUp(controls.interact)) speed = playerStats.walkingSpeed;
+        float moveX = Input.GetAxis("Horizontal") * playerStats.acceleration;
+        float moveY = Input.GetAxis("Jump") * (isGrounded ? playerStats.jumpForce : 0f);
+        float moveZ = Input.GetAxis("Vertical") * playerStats.acceleration;
+        float rotationX = Input.GetAxis("Mouse X") * playerStats.sensitivity * Time.timeScale;
+        float rotationY = -Input.GetAxis("Mouse Y") * playerStats.sensitivity * Time.timeScale;
+
+        rb.AddForce(transform.forward * moveZ + transform.right * moveX + transform.up * moveY);
+        rb.velocity = new Vector3(Mathf.Clamp(rb.velocity.x, -speed, speed), rb.velocity.y, Mathf.Clamp(rb.velocity.z, -speed, speed));
+        transform.Rotate(0, rotationX, 0);
+
+        float curRotY = mainCamera.transform.localEulerAngles.x + rotationY;
+        if (curRotY > 180) curRotY -= 360;
+        curRotY = Mathf.Clamp(curRotY, playerStats.minCameraAngle, playerStats.maxCameraAngle);
+        if (curRotY < 0) curRotY += 360;
+        mainCamera.transform.localEulerAngles = new Vector3(curRotY, mainCamera.transform.localEulerAngles.y, 0);
+
+        if (Input.GetKeyDown(controls.interact)) Interact();
+        if (Input.GetKeyDown(controls.drop)) DropWeapon();
     }
 
-    private void MovePlayer()
+    private void FixedUpdate()
     {
-        isGrounded = controller.isGrounded;  
-
-        if (isGrounded && velocity.y < 0)
+        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out RaycastHit hitInfo, playerStats.reachingDistance, playerStats.interactionLayer))
         {
-            velocity.y = -2f; 
-        }
-
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-
-        float currentSpeed = moveSpeed;
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            currentSpeed *= sprintMultiplier;
-        }
-
-        Vector3 moveDirection = transform.forward * verticalInput + transform.right * horizontalInput;
-        controller.Move(moveDirection * currentSpeed * Time.deltaTime);
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
-        }
-
-        velocity.y += Physics.gravity.y * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
-    }
-
-    private void ShootProjectile()
-    {
-        if (Input.GetButtonDown("Fire1")) 
-        {
-            GameObject projectile = Instantiate(projectilePrefab, transform.position + Camera.main.transform.forward, Quaternion.identity);
-            projectile.transform.forward = Camera.main.transform.forward;
-        }
-    }
-
-    private void HandlePickUpAndThrow()
-    {
-        if (Input.GetKeyDown(KeyCode.E)) // Підняти або кинути
-        {
-            if (heldObject == null)
+            if (interactionObject && interactionObject.TryGetComponent(out Outline outline)) outline.enabled = false;
+            interactionObject = hitInfo.transform.gameObject;
+            if (hitInfo.transform.TryGetComponent(out outline))
             {
-                // Спроба підняти об'єкт
-                RaycastHit hit;
-                if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, pickUpRange))
-                {
-                    if (hit.collider.CompareTag("PickUp")) // Перевіряємо тег
-                    {
-                        PickUpObject(hit.collider.gameObject);
-                    }
-                }
-            }
-            else
-            {
-                // Викинути об'єкт
-                ThrowObject();
+                outline.enabled = true;
             }
         }
+        else
+        {
+            if (interactionObject && interactionObject.TryGetComponent(out Outline outline)) outline.enabled = false;
+            interactionObject = null;
+        }
     }
 
-    private void PickUpObject(GameObject obj)
+    private void Interact()
     {
-        heldObject = obj;
-        obj.GetComponent<Rigidbody>().isKinematic = true; // Вимикаємо фізику
-        obj.transform.SetParent(holdPoint); // Прив'язуємо до гравця
-        obj.transform.localPosition = Vector3.zero; // Центруємо в точці
+        if (!interactionObject) return;
+        switch (interactionObject.tag)
+        {
+            case "Weapon":
+                PickUpWeapon();
+                break;
+            case "Resource":
+                resources.coal++;
+                Destroy(interactionObject);
+                break;
+            case "Door":
+                break;
+        }
     }
 
-    private void ThrowObject()
+    private void PickUpWeapon()
     {
-        Rigidbody objRigidbody = heldObject.GetComponent<Rigidbody>();
-        heldObject.transform.SetParent(null); // Від'єднуємо від гравця
-        objRigidbody.isKinematic = false; // Вмикаємо фізику
-        objRigidbody.AddForce(Camera.main.transform.forward * throwForce, ForceMode.Impulse); // Додаємо імпульс
-        heldObject = null; // Очищаємо посилання
+        if (curWeapon) DropWeapon();
+        if (interactionObject.TryGetComponent(out Outline outline)) outline.enabled = false;
+        curWeapon = interactionObject.GetComponent<WeaponController>();
+        curWeapon.rb.isKinematic = true;
+        curWeapon.weaponCollider.enabled = false;
+        curWeapon.transform.SetParent(weaponPoint);
+        curWeapon.transform.position = weaponPoint.position;
+        curWeapon.transform.rotation = weaponPoint.rotation;
     }
 
+    private void DropWeapon()
+    {
+        if (!curWeapon) return;
+        curWeapon.rb.isKinematic = false;
+        curWeapon.weaponCollider.enabled = true;
+        curWeapon.transform.SetParent(null);
+        curWeapon.rb.AddForce(weaponPoint.forward * playerStats.throwingForce, ForceMode.VelocityChange);
+        curWeapon = null;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        isGrounded = true;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        isGrounded = false;
+    }
+
+    // ����� ��� ��������� �����
     public void TakeDamage(float damage)
     {
         health -= damage;
-        if (health <= 0) Die(); 
+        Debug.Log($"Player took {damage} damage. Remaining health: {health}");
+
+        if (health <= 0)
+        {
+            Die();
+        }
     }
 
+    // ����� ��� ��������� ������ ������
     private void Die()
     {
-        Destroy(gameObject);
+        Debug.Log("Player died!");
+        // ������ ��� ��������� ������ (��������, ���������� ������)
     }
 }
