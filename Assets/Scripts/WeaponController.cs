@@ -9,9 +9,10 @@ public class WeaponController : MonoBehaviour
     public Transform firePoint;              
     public float spreadIncrease = 0.5f;      
     public float maxSpread = 5f;            
-    public float recoverySpeed = 2f;        
-    public int maxAmmo = 30;                
-    private int currentAmmo;                
+    public float recoverySpeed = 2f;
+    public int maxAmmoInMag = 30;
+    public int maxAmmo = 300;
+    public int currentAmmo;                
     public float reloadTime = 2f;           
     private bool isReloading = false;       
     private float currentSpread = 0.0f;     
@@ -20,7 +21,7 @@ public class WeaponController : MonoBehaviour
 
     void Start()
     {
-        currentAmmo = maxAmmo;
+        currentAmmo = maxAmmoInMag;
     }
 
     void Update()
@@ -34,16 +35,14 @@ public class WeaponController : MonoBehaviour
                 nextFireTime = Time.time + fireRate;  
                 ShootProjectile();                    
             }
-            else
-            {
-                StartCoroutine(Reload());
-            }
         }
 
         if (!Input.GetButton("Fire1") && currentSpread > 0)
         {
             currentSpread = Mathf.Max(currentSpread - recoverySpeed * Time.deltaTime, 0);
         }
+
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading) StartCoroutine(Reload());
     }
 
     private void ShootProjectile()
@@ -60,9 +59,13 @@ public class WeaponController : MonoBehaviour
 
     private IEnumerator Reload()
     {
+        if (maxAmmo == 0 || currentAmmo >= maxAmmoInMag) yield break;
         isReloading = true;
         yield return new WaitForSeconds(reloadTime);
-        currentAmmo = maxAmmo; 
+        int requiredAmmo = Mathf.Min(maxAmmo, maxAmmoInMag - currentAmmo);
+        if (maxAmmo < 0) requiredAmmo = currentAmmo - maxAmmoInMag;
+        else maxAmmo -= requiredAmmo;
+        currentAmmo += requiredAmmo;
         isReloading = false;
     }
 }

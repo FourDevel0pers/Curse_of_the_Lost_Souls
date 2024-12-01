@@ -264,7 +264,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!195 &474321256
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -538,7 +538,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1798272773}
+    m_TransformParent: {fileID: 963194228}
     m_Modifications:
     - target: {fileID: 2716805421020624302, guid: 096cb921cb878724db474ea540032640, type: 3}
       propertyPath: m_LocalScale.x
@@ -554,11 +554,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2716805421020624302, guid: 096cb921cb878724db474ea540032640, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.38
+      value: 0.3800001
       objectReference: {fileID: 0}
     - target: {fileID: 2716805421020624302, guid: 096cb921cb878724db474ea540032640, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.36
+      value: -0.59999996
       objectReference: {fileID: 0}
     - target: {fileID: 2716805421020624302, guid: 096cb921cb878724db474ea540032640, type: 3}
       propertyPath: m_LocalPosition.z
@@ -700,7 +700,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.96, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1254118425}
   m_Father: {fileID: 1798272773}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &963194229
@@ -760,12 +761,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b49b999826c8ad444b80798c18163118, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileSpeed: 20
+  projectileSpeed: 55
   projectilePrefab: {fileID: 6107378038584718357, guid: b927e7571c176ed44a5e263315ebfd79, type: 3}
   firePoint: {fileID: 1386729436}
   spreadIncrease: 0.5
   maxSpread: 5
   recoverySpeed: 5
+  maxAmmoInMag: 30
+  maxAmmo: 300
+  currentAmmo: 0
+  reloadTime: 2
   fireRate: 0.1
 --- !u!1 &1274143439
 GameObject:
@@ -1095,7 +1100,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 963194228}
-  - {fileID: 1254118425}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1996184750
