@@ -135,10 +135,11 @@ GameObject:
   - component: {fileID: 216753245}
   - component: {fileID: 216753244}
   - component: {fileID: 216753248}
-  - component: {fileID: 216753249}
+  - component: {fileID: 216753250}
+  - component: {fileID: 216753251}
   m_Layer: 13
   m_Name: Cube
-  m_TagString: PickUp
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -252,11 +253,27 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &216753249
+--- !u!114 &216753250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216753243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcb17e2d61d71a145acf7ba07b579981, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 0
+  pushingForce: 0
+  rb: {fileID: 0}
+  weaponCollider: {fileID: 0}
+--- !u!114 &216753251
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -265,12 +282,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 216753243}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0.990566, g: 0.9214062, b: 0.051397298, a: 0.5}
-  m_EffectDistance: {x: 1, y: -1}
-  m_UseGraphicAlpha: 1
+  outlineMode: 0
+  outlineColor: {r: 1, g: 0.9890206, b: 0, a: 1}
+  outlineWidth: 4
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &219817261
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,7 +433,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!195 &474321256
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -856,7 +876,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 04d47a8bb58012b48989b341b144c144, type: 3}
   m_Name: 
@@ -1147,28 +1167,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerStats:
-    health: 0
-    acceleration: 0
-    walkingSpeed: 0
-    runningSpeed: 0
-    jumpForce: 0
-    throwingForce: 0
-    sensitivity: 0
-    minCameraAngle: 0
-    maxCameraAngle: 0
-    reachingDistance: 0
+    health: 100
+    acceleration: 8
+    walkingSpeed: 4
+    runningSpeed: 7
+    jumpForce: 5
+    throwingForce: 10
+    sensitivity: 1
+    minCameraAngle: -80
+    maxCameraAngle: 80
+    reachingDistance: 2.5
     interactionLayer:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 8192
   resources:
     coal: 0
     wood: 0
   controls:
-    interact: 0
-    run: 0
-    drop: 0
+    interact: 101
+    run: 304
+    drop: 103
   curWeapon: {fileID: 0}
-  weaponPoint: {fileID: 0}
+  weaponPoint: {fileID: 1960359973}
   isGrounded: 0
   interactionObject: {fileID: 0}
 --- !u!143 &1798272769
@@ -1188,7 +1208,7 @@ CharacterController:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Height: 2
   m_Radius: 0.5
@@ -1295,7 +1315,7 @@ Rigidbody:
   m_GameObject: {fileID: 1798272767}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 1
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -1311,7 +1331,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!1 &1960359972
 GameObject:
