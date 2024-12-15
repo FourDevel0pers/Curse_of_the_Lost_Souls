@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -43,65 +44,96 @@ public class EnemyController : MonoBehaviour
     private void FixedUpdate()
     {
         if (isStunned) return;
+
         if (distraction)
         {
-            if (Vector3.Distance(attackPoint.position, distraction.position) < enemyData.attackRange) StartCoroutine(Stun(3, "Inspect"));
+            if (Vector3.Distance(attackPoint.position, distraction.position) < enemyData.attackRange)
+                StartCoroutine(Stun(3, "Inspect"));
             return;
         }
+
         switch (enemyState)
         {
             case EnemyState.Patroling:
-                Collider[] colliders = Physics.OverlapSphere(transform.position, enemyData.fieldOfView);
-                foreach (Collider col in colliders)
-                {
-                    if (Physics.Raycast(attackPoint.position, col.transform.position - attackPoint.position, out RaycastHit hit, enemyData.fieldOfView))
-                    {
-                        Debug.DrawLine(attackPoint.position, hit.point, Color.green, 1f);
-                        if (hit.collider.CompareTag("Player"))
-                        {
-                            StartChasing();
-                            CallEnemies();
-                            break;
-                        }
-                    }
-                }
-                if (Vector3.Distance(attackPoint.position, target) < enemyData.attackRange)
-                {
-                    curWaypointIndex++;
-                    if (curWaypointIndex > waypoints.childCount - 1) curWaypointIndex = 0;
-                    target = waypoints.GetChild(curWaypointIndex).position;
-                    agent.SetDestination(target);
-                }
+                Patrol();
                 break;
             case EnemyState.Chasing:
-                if (Vector3.Distance(attackPoint.position, player.transform.position) < enemyData.attackRange)
-                    enemyState = EnemyState.Attacking;
-                agent.SetDestination(player.transform.position);
+                ChasePlayer();
                 break;
             case EnemyState.Attacking:
-                Rotate(player.transform.position - transform.position, transform);
-                if (Vector3.Distance(attackPoint.position, player.transform.position) < enemyData.attackRange)
-                {
-                    if (!isAttacking && !isReloading)
-                    {
-                        isAttacking = true;
-                        agent.isStopped = true;
-                        StartCoroutine(Attack());
-                    }
-                }
-                else if (isAttacking)
-                {
-                    isAttacking = false;
-                    agent.isStopped = false;
-                    StopCoroutine(Attack());
-                    enemyState = EnemyState.Chasing;
-                }
-                return;
+                AttackPlayer();
+                break;
             default:
-                return;
+                break;
+        }
+    }
+
+    private void Patrol()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, enemyData.fieldOfView);
+        foreach (Collider col in colliders)
+        {
+            if (Physics.Raycast(attackPoint.position, col.transform.position - attackPoint.position, out RaycastHit hit, enemyData.fieldOfView))
+            {
+                Debug.DrawLine(attackPoint.position, hit.point, Color.green, 1f);
+                if (hit.collider.CompareTag("Player"))
+                {
+                    StartChasing();
+                    CallEnemies();
+                    break;
+                }
+            }
         }
 
-        //if (!animator.GetBool("Move") && !isAttacking) animator.SetBool("Move", true);
+        if (Vector3.Distance(attackPoint.position, target) < enemyData.attackRange)
+        {
+            curWaypointIndex++;
+            if (curWaypointIndex > waypoints.childCount - 1) curWaypointIndex = 0;
+            target = waypoints.GetChild(curWaypointIndex).position;
+            agent.SetDestination(target);
+        }
+    }
+
+    private void ChasePlayer()
+    {
+        Vector3 directionToPlayer = player.transform.position - attackPoint.position;
+
+        if (!Physics.Raycast(attackPoint.position, directionToPlayer, out RaycastHit hit, enemyData.fieldOfView) || 
+            hit.collider.CompareTag("Player"))
+        {
+            agent.SetDestination(player.transform.position); 
+        }
+        else
+        {
+            agent.SetDestination(hit.point + hit.normal * 2.0f); 
+        }
+
+        if (Vector3.Distance(attackPoint.position, player.transform.position) < enemyData.attackRange)
+        {
+            enemyState = EnemyState.Attacking;
+        }
+    }
+
+    private void AttackPlayer()
+    {
+        Rotate(player.transform.position - transform.position, transform);
+
+        if (Vector3.Distance(attackPoint.position, player.transform.position) < enemyData.attackRange)
+        {
+            if (!isAttacking && !isReloading)
+            {
+                isAttacking = true;
+                agent.isStopped = true;
+                StartCoroutine(Attack());
+            }
+        }
+        else if (isAttacking)
+        {
+            isAttacking = false;
+            agent.isStopped = false;
+            StopCoroutine(Attack());
+            enemyState = EnemyState.Chasing;
+        }
     }
 
     public void GoToDistraction(Transform distractionObject)
@@ -132,7 +164,6 @@ public class EnemyController : MonoBehaviour
         Quaternion rotation = Quaternion.LookRotation(rotate, Vector3.up);
         objectOfRotation.rotation = Quaternion.Slerp(objectOfRotation.rotation, rotation, Time.deltaTime * agent.angularSpeed);
     }
-
 
     public IEnumerator Stun(float duration, string animationTriggerName = "Stun")
     {
