@@ -25,7 +25,7 @@ public class PlayerStats
 [System.Serializable]
 public class PlayerResources
 {
-    public int coal;
+    public int stone;
     public int wood;
 }
 
@@ -115,7 +115,8 @@ public class PlayerController : MonoBehaviour
                 PickUpWeapon();
                 break;
             case "Resource":
-                resources.coal++;
+                if (interactionObject.name.ToLower().Contains(nameof(PlayerResources.stone))) resources.stone++;
+                else if (interactionObject.name.ToLower().Contains(nameof(PlayerResources.wood))) resources.wood++;
                 Destroy(interactionObject);
                 break;
             case "Door":
