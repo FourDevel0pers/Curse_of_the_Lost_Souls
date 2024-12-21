@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float health;
+    public float health = 100f;  // Встановлюємо початкове значення HP на 100
     public float moveSpeed = 5.0f;
     public float sprintMultiplier = 1.5f;
     public float jumpHeight = 1.5f;
