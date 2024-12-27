@@ -20,7 +20,7 @@ public class EnemyController : MonoBehaviour
 
     [HideInInspector] public PlayerController player;
     private NavMeshAgent agent;
-    private Animator animator;
+    public Animator animator;
     private Vector3 target;
     private bool isAttacking = false;
     private bool isReloading = false;
@@ -30,11 +30,10 @@ public class EnemyController : MonoBehaviour
     {
         curWaypointIndex = Random.Range(0, waypoints.childCount);
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
-        player = FindFirstObjectByType<PlayerController>();
+        player = FindObjectOfType<PlayerController>();
         agent.speed = enemyData.walkingSpeed;
 
-        // Збільшуємо поле зору
+        // Увеличиваем поле зрения
         enemyData.fieldOfView *= 1.5f;
 
         target = waypoints.GetChild(curWaypointIndex).position;
@@ -81,6 +80,7 @@ public class EnemyController : MonoBehaviour
             if (curWaypointIndex >= waypoints.childCount) curWaypointIndex = 0;
             target = waypoints.GetChild(curWaypointIndex).position;
             agent.SetDestination(target);
+            animator.SetBool("IsWalking", true);
         }
     }
 
@@ -90,6 +90,7 @@ public class EnemyController : MonoBehaviour
         if (agent.CalculatePath(player.transform.position, path) && path.status == NavMeshPathStatus.PathComplete)
         {
             agent.SetDestination(player.transform.position);
+            animator.SetBool("IsWalking", true);
         }
 
         if (Vector3.Distance(transform.position, player.transform.position) < enemyData.attackRange)
@@ -110,21 +111,23 @@ public class EnemyController : MonoBehaviour
         {
             isAttacking = true;
             agent.isStopped = true;
+            animator.SetBool("IsWalking", false);
             StartCoroutine(Attack());
         }
     }
 
     private IEnumerator Attack()
     {
+        animator.SetTrigger("Attack");
         Collider[] colliders = Physics.OverlapSphere(attackPoint.position, enemyData.attackRange);
         foreach (Collider collider in colliders)
         {
             if (collider.CompareTag("Player"))
             {
-                player.TakeDamage(20); // Наносимо шкоду гравцю
+                player.TakeDamage(20); // Наносим урон игроку
             }
         }
-        yield return new WaitForSeconds(enemyData.attackDelay); // Затримка між ударами
+        yield return new WaitForSeconds(enemyData.attackDelay); // Задержка между ударами
         isReloading = false;
         isAttacking = false;
         agent.isStopped = false;
@@ -144,6 +147,22 @@ public class EnemyController : MonoBehaviour
 
     private void Die()
     {
-        Destroy(gameObject);
+        agent.isStopped = true;
+        animator.SetBool("IsWalking", false);
+        animator.SetTrigger("Die");
+        Destroy(GetComponent<Collider>());
+        Destroy(this);
+        Destroy(gameObject, 30f); // Удаляем врага через 30 секунд (для возможных анимаций)
+    }
+
+    // Обработка попадания пули (при использовании Collider)
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Bullet")) // Проверяем, если это пуля
+        {
+            TakeDamage(20); // Наносим урон
+            Destroy(other.gameObject); // Уничтожаем пулю
+        }
     }
 }
+
