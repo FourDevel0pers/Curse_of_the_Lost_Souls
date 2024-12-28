@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -17,6 +18,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private EnemyState enemyState;
     public Transform attackPoint;
     public Transform waypoints;
+
+    [SerializeField] private List<GameObject> dropPrefabs;
 
     [HideInInspector] public PlayerController player;
     private NavMeshAgent agent;
@@ -147,6 +150,10 @@ public class EnemyController : MonoBehaviour
 
     private void Die()
     {
+        foreach (GameObject drop in dropPrefabs)
+        {
+            Instantiate(drop, transform.position + new Vector3 (Random.Range(-.5f, .5f), 0, Random.Range(-.5f, .5f)), Random.rotation);
+        }
         agent.isStopped = true;
         animator.SetBool("IsWalking", false);
         animator.SetTrigger("Die");
