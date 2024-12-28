@@ -36,12 +36,12 @@ public class EnemyController : MonoBehaviour
         player = FindObjectOfType<PlayerController>();
         agent.speed = enemyData.walkingSpeed;
 
-        // Увеличиваем поле зрения
-        enemyData.fieldOfView *= 1.5f;
-
         target = waypoints.GetChild(curWaypointIndex).position;
         agent.SetDestination(target);
+        animator.SetBool("IsWalking", true); // Включаем анимацию ходьбы
         health = enemyData.health;
+
+        enemyState = EnemyState.Patroling; // Устанавливаем начальное состояние как патрулирование
     }
 
     private void FixedUpdate()
@@ -64,6 +64,16 @@ public class EnemyController : MonoBehaviour
 
     private void Patrol()
     {
+        // Проверяем, достиг ли враг текущей цели
+        if (Vector3.Distance(transform.position, target) < 1f)
+        {
+            curWaypointIndex++;
+            if (curWaypointIndex >= waypoints.childCount) curWaypointIndex = 0;
+            target = waypoints.GetChild(curWaypointIndex).position;
+            agent.SetDestination(target);
+        }
+
+        // Проверяем наличие игрока в поле зрения
         Collider[] colliders = Physics.OverlapSphere(transform.position, enemyData.fieldOfView);
         foreach (Collider col in colliders)
         {
@@ -75,15 +85,6 @@ public class EnemyController : MonoBehaviour
                     break;
                 }
             }
-        }
-
-        if (Vector3.Distance(transform.position, target) < 1f)
-        {
-            curWaypointIndex++;
-            if (curWaypointIndex >= waypoints.childCount) curWaypointIndex = 0;
-            target = waypoints.GetChild(curWaypointIndex).position;
-            agent.SetDestination(target);
-            animator.SetBool("IsWalking", true);
         }
     }
 
@@ -152,7 +153,7 @@ public class EnemyController : MonoBehaviour
     {
         foreach (GameObject drop in dropPrefabs)
         {
-            Instantiate(drop, transform.position + new Vector3 (Random.Range(-.5f, .5f), 0, Random.Range(-.5f, .5f)), Random.rotation);
+            Instantiate(drop, transform.position + new Vector3(Random.Range(-.5f, .5f), 0, Random.Range(-.5f, .5f)), Random.rotation);
         }
         agent.isStopped = true;
         animator.SetBool("IsWalking", false);
