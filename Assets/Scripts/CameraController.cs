@@ -11,8 +11,8 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         // Зчитуємо рух миші по осям X і Y
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+        float mouseX = Input.GetAxis("Mouse X") * Time.timeScale;
+        float mouseY = Input.GetAxis("Mouse Y") * Time.timeScale;
 
         // Поворот батьківського об'єкта по осі Y (вліво/вправо)
         transform.parent.Rotate(Vector3.up * mouseX * sensitivity);

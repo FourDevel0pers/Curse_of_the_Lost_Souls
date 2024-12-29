@@ -9,6 +9,7 @@ public class PlayerShoot : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale <= 0 ) return;
         if (Input.GetButtonDown("Fire1"))  // Стрельба при нажатии кнопки (по умолчанию это левая кнопка мыши)
         {
             Shoot();
