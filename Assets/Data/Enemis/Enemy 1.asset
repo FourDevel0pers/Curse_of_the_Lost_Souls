@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78aa5aff3337e274aa4cd27d7d5b7b9b, type: 3}
   m_Name: Enemy 1
   m_EditorClassIdentifier: 
-  walkingSpeed: 2
-  runningSpeed: 4
-  fieldOfView: 10
-  attackRange: 2
-  attackDelay: 0
+  health: 50
+  damage: 20
+  walkingSpeed: 1
+  runningSpeed: 3
+  fieldOfView: 683.4375
+  attackRange: 2.5
+  attackDelay: 4.5

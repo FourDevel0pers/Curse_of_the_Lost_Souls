@@ -9,11 +9,11 @@ public class Projectile : MonoBehaviour
     {
         Destroy(gameObject, lifetime);
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collider)
     {
-        if (collision.collider.CompareTag("Enemy"))
+        if (collider.CompareTag("Enemy"))
         {
-            EnemyController enemy = collision.collider.GetComponent<EnemyController>();
+            EnemyController enemy = collider.GetComponent<EnemyController>();
             if (enemy != null)
             {
                 enemy.TakeDamage(damage); 
