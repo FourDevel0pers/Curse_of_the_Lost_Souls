@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float health = 100f;  // Встановлюємо початкове значення HP на 100
+    public WeaponController curWeapon;
+    public float health = 100f;  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ HP пїЅпїЅ 100
     public float moveSpeed = 5.0f;
     public float sprintMultiplier = 1.5f;
     public float jumpHeight = 1.5f;
@@ -21,6 +22,37 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         MovePlayer();
+                //Weapon
+        if (!curWeapon) return;
+        if(Input.GetMouseButtonDown(1))
+        {
+            curWeapon.animator.SetBool("Aim", true);
+            // playerUI.crossHair.gameObject.SetActive(false);
+            // playerUI.alternateCrossHair.gameObject.SetActive(false);
+            curWeapon.shootingSpread = curWeapon.weaponData.aimShootingSpread;
+        }
+        else if(Input.GetMouseButtonUp(1))
+        {
+            curWeapon.animator.SetBool("Aim", false);
+            // playerUI.crossHair.gameObject.SetActive(true);
+            // playerUI.alternateCrossHair.gameObject.SetActive(true);
+            curWeapon.shootingSpread = curWeapon.weaponData.shootingSpread;
+        }
+
+        if(Input.GetMouseButtonDown(0) && !curWeapon.isShooting && !curWeapon.isReloading)
+        {
+            curWeapon.isShooting = true;
+            curWeapon.Shoot();
+        }
+        else if(Input.GetMouseButtonUp(0) && curWeapon.isShooting)
+        {
+            curWeapon.isShooting = false;
+        }
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            curWeapon.StartCoroutine(curWeapon.Reload());
+        }
     }
 
     private void MovePlayer()

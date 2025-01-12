@@ -40,7 +40,7 @@ public class WeaponController : MonoBehaviour
         {
             shootingSpread = Mathf.Clamp(shootingSpread - weaponData.shootingSpreadDecreaseValue, weaponData.shootingSpread, weaponData.maxShootingSpread);
             float crossHairSize = ((PlayerUI.resolution.y / 100.0f) * shootingSpread) * 2;
-            player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
+            // player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
         }
     }
 
@@ -58,16 +58,16 @@ public class WeaponController : MonoBehaviour
             curBullet.GetComponent<Rigidbody>().velocity = curBullet.transform.forward * weaponData.bulletSpeed;
             curBullet.TryGetComponent(out BulletController bullet);
             bullet.damage = weaponData.damage;
-            bullet.ownerTag = player.tag;
+            bullet.ownerTag = "Player";
             Destroy(curBullet, 3);
         }
         ammoInMag--;
-        player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
+        // player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
         if (!animator.GetBool("Aim"))
         {
             shootingSpread = Mathf.Clamp(shootingSpread + weaponData.shootingSpreadIncreaseValue, weaponData.shootingSpread, weaponData.maxShootingSpread);
             float crossHairSize = ((PlayerUI.resolution.y / 100.0f) * shootingSpread) * 2;
-            player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
+            // player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
             //transform.DOShakeRotation(.1f, new Vector3(3, 0, 0));
         }
         else
@@ -92,7 +92,7 @@ public class WeaponController : MonoBehaviour
         int requiredAmmo = Mathf.Min(weaponData.ammoInMag - ammoInMag, ammo);
         ammoInMag += requiredAmmo;
         ammo -= requiredAmmo;
-        player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
+        // player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
         isReloading = false;
     }
 }

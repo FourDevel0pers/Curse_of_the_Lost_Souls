@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75c696d9215bee14e8ff6fdeee7be1d4, type: 3}
+  m_Script: {fileID: 11500000, guid: a06b02bea852b444983cbe07366fd2a3, type: 3}
   m_Name: AK - 74
   m_EditorClassIdentifier: 
   damage: 44
@@ -21,14 +21,12 @@ MonoBehaviour:
   shootingSpread: 5
   maxShootingSpread: 10
   shootingSpreadIncreaseValue: 0.75
-  shootingSpreadDecreaseValue: 0.2
+  shootingSpreadDecreaseValue: 0.25
   verticalSpray: 1.8
   horizontalSpray:
-    leftDirection: 0.4
-    rightDirection: 0.55
+    leftDirection: 0
+    rightDirection: 0
   reloadingDuration: 2
   bulletSpeed: 35
-  bulletPrefab: {fileID: 3882421529995028313, guid: a3d259b3e192e3e409811f909c1f6e0a,
-    type: 3}
-  weaponModel: {fileID: 8758221259266429706, guid: 1b2ae41ecc26f5d489e7aeadda9f9981,
-    type: 3}
+  bulletPrefab: {fileID: 3882421529995028313, guid: 2d891dc67019568409078c34145f325c, type: 3}
+  weaponModel: {fileID: 7822354120756595593, guid: 14014dd8c5a3754439754ee6c4815a73, type: 3}
