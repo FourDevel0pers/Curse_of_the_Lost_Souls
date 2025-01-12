@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public WeaponController curWeapon;
-    public float health = 100f;  // ������������ ��������� �������� HP �� 100
+    public float health = 100f; 
     public float moveSpeed = 5.0f;
     public float sprintMultiplier = 1.5f;
     public float jumpHeight = 1.5f;
