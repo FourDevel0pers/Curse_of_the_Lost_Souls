@@ -18,4 +18,4 @@ MonoBehaviour:
   runningSpeed: 3
   fieldOfView: 150
   attackRange: 2.5
-  attackDelay: 4.5
+  attackDelay: 1.2

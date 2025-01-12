@@ -128,7 +128,7 @@ public class EnemyController : MonoBehaviour
         {
             if (collider.CompareTag("Player"))
             {
-                player.TakeDamage(20); // Наносим урон игроку
+                player.TakeDamage(enemyData.damage); // Наносим урон игроку
             }
         }
         yield return new WaitForSeconds(enemyData.attackDelay); // Задержка между ударами
