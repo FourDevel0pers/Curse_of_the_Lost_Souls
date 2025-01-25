@@ -1,56 +1,56 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainMenuController : MonoBehaviour
+public class HealthSystem : MonoBehaviour
 {
-    [Header("UI")]
-    [SerializeField] private Slider loadingProgressBarSlider;
-    [SerializeField] private TextMeshProUGUI tipText;
-    [SerializeField] private GameObject loadingScreen;
-    [SerializeField] private Animator crossFadeAnimator;
-    [Space(10)]
+    [Header("Настройки здоровья")]
+    public float maxHealth = 100f;
+    public float currentHealth;
 
-    [SerializeField] private List<string> tipTexts;
+    [Header("UI элементы")]
+    public Slider healthSlider;
 
-    private AsyncOperation loadingProgress;
-
-    private void Start()
+    void Start()
     {
-        Time.timeScale = 1.0f;
+        // Устанавливаем начальное здоровье
+        currentHealth = maxHealth;
+        UpdateHealthUI();
     }
 
-    public void OnPlayButtonClick(int sceneIndex)
+    public void TakeDamage(float damage)
     {
-        tipText.text = tipTexts[Random.Range(0, tipTexts.Count)];
-        loadingScreen.SetActive(true);
-        crossFadeAnimator.SetBool("Fade", true);
-        StartCoroutine(LoadScene(.5f, sceneIndex));
-    }
+        // Уменьшаем здоровье
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        UpdateHealthUI();
 
-    public void OnQuitButtonClick()
-    {
-        loadingScreen.SetActive(false);
-        crossFadeAnimator.SetBool("Fade", true);
-        Invoke(nameof(ApplicationQuit), 1f);
-    }
-
-    private void ApplicationQuit()
-    {
-        Application.Quit();
-    }
-
-    private IEnumerator LoadScene(float delay, int sceneIndex)
-    {
-        yield return new WaitForSeconds(delay);
-        loadingProgress = SceneManager.LoadSceneAsync(sceneIndex);
-        while(!loadingProgress.isDone)
+        // Проверяем, если здоровье закончилось
+        if (currentHealth <= 0)
         {
-            loadingProgressBarSlider.value = loadingProgress.progress / .9f;
-            yield return null;
+            Die();
         }
+    }
+
+    public void Heal(float healAmount)
+    {
+        // Увеличиваем здоровье
+        currentHealth += healAmount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        UpdateHealthUI();
+    }
+
+    void UpdateHealthUI()
+    {
+        // Обновляем значение слайдера
+        if (healthSlider != null)
+        {
+            healthSlider.value = currentHealth / maxHealth;
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Персонаж погиб!");
+        // Здесь можно реализовать смерть персонажа
     }
 }

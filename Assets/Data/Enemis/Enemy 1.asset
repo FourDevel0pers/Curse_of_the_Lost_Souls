@@ -16,6 +16,6 @@ MonoBehaviour:
   damage: 20
   walkingSpeed: 1
   runningSpeed: 3
-  fieldOfView: 150
-  attackRange: 2.5
+  fieldOfView: 10
+  attackRange: 1.5
   attackDelay: 1.2

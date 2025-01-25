@@ -77,9 +77,9 @@ public class EnemyController : MonoBehaviour
         Collider[] colliders = Physics.OverlapSphere(transform.position, enemyData.fieldOfView);
         foreach (Collider col in colliders)
         {
-            if (Physics.Raycast(attackPoint.position, col.transform.position - attackPoint.position, out RaycastHit hit, enemyData.fieldOfView))
+            if (col.CompareTag("Player"))
             {
-                if (hit.collider.CompareTag("Player"))
+                if (Physics.Raycast(attackPoint.position, col.transform.position - attackPoint.position, out RaycastHit hit, enemyData.fieldOfView))
                 {
                     StartChasing();
                     break;
