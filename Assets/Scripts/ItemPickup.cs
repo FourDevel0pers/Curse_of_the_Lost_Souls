@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
-    public Sprite itemIcon; // Иконка предмета
+    public string itemName;
+    public Sprite itemIcon;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -11,8 +12,9 @@ public class ItemPickup : MonoBehaviour
             InventorySystem inventory = other.GetComponent<InventorySystem>();
             if (inventory != null)
             {
-                inventory.AddItem(itemIcon);
-                Destroy(gameObject); // Удалить предмет из мира
+                ItemData newItem = new ItemData(itemName, itemIcon);
+                inventory.AddItem(newItem);
+                Destroy(gameObject);
             }
         }
     }

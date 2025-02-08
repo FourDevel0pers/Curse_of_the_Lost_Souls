@@ -1,40 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class InventorySystem : MonoBehaviour
 {
-    public List<Sprite> inventoryItems = new List<Sprite>(); // Список предметов (иконок)
-    public GameObject quickAccessPanel; // Панель быстрого доступа (5 слотов)
-    public GameObject fullInventoryPanel; // Панель полного инвентаря (10 слотов)
-    public GameObject slotPrefab; // Префаб для отображения слотов
-    public int maxQuickAccessSlots = 5;
-    public int maxFullInventorySlots = 10;
+    public int maxQuickAccessSlots = 5;  // 5 слотов в быстром доступе
+    public int maxFullInventorySlots = 10; // 10 слотов в полном инвентаре
 
-    private bool isFullInventoryVisible = false;
+    private List<ItemData> inventoryItems = new List<ItemData>();
 
-    void Start()
-    {
-        UpdateUI();
-        fullInventoryPanel.SetActive(false); // Полный инвентарь скрыт
-    }
+    public delegate void OnInventoryChanged();
+    public event OnInventoryChanged onInventoryChanged;
 
-    void Update()
-    {
-        // Открытие/закрытие полного инвентаря при нажатии Tab
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            isFullInventoryVisible = !isFullInventoryVisible;
-            fullInventoryPanel.SetActive(isFullInventoryVisible);
-        }
-    }
-
-    public void AddItem(Sprite itemIcon)
+    public void AddItem(ItemData item)
     {
         if (inventoryItems.Count < maxFullInventorySlots)
         {
-            inventoryItems.Add(itemIcon);
-            UpdateUI();
+            inventoryItems.Add(item);
+            onInventoryChanged?.Invoke(); // Обновляем UI
         }
         else
         {
@@ -42,34 +24,13 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
-    void UpdateUI()
+    public List<ItemData> GetQuickAccessItems()
     {
-        // Обновление панели быстрого доступа
-        foreach (Transform child in quickAccessPanel.transform)
-        {
-            Destroy(child.gameObject);
-        }
-
-        for (int i = 0; i < Mathf.Min(maxQuickAccessSlots, inventoryItems.Count); i++)
-        {
-            CreateSlot(quickAccessPanel, inventoryItems[i]);
-        }
-
-        // Обновление панели полного инвентаря
-        foreach (Transform child in fullInventoryPanel.transform)
-        {
-            Destroy(child.gameObject);
-        }
-
-        for (int i = 0; i < inventoryItems.Count; i++)
-        {
-            CreateSlot(fullInventoryPanel, inventoryItems[i]);
-        }
+        return inventoryItems.GetRange(0, Mathf.Min(maxQuickAccessSlots, inventoryItems.Count));
     }
 
-    void CreateSlot(GameObject parent, Sprite itemIcon)
+    public List<ItemData> GetAllItems()
     {
-        GameObject slot = Instantiate(slotPrefab, parent.transform);
-        slot.GetComponent<Image>().sprite = itemIcon;
+        return new List<ItemData>(inventoryItems);
     }
 }
