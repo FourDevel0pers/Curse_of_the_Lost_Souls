@@ -194,7 +194,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AK74_IDLE
+  m_Name: M1911_IDLE
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -208,7 +208,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 6dec6f22feb14d04480b3edf371bdcaa, type: 2}
+  m_Motion: {fileID: 7400000, guid: 1ec9da9bb48190c488b68e4b7cb3b71b, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -220,7 +220,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AK - 74
+  m_Name: M1911
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Aim
@@ -261,7 +261,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AK74_Shoot
+  m_Name: M1911_Shoot
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -275,7 +275,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 875c87679029152499e41d480516c172, type: 2}
+  m_Motion: {fileID: 7400000, guid: 9a6f8af50597c944394b9adf5b9cb20f, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -310,7 +310,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AK74_Aim
+  m_Name: M1911_Aim
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -324,7 +324,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 4dbc51c16b8cae04dbf4665cca47bc3d, type: 2}
+  m_Motion: {fileID: 7400000, guid: e6682c35c75fa2c4990a8a60580c1546, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -337,7 +337,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AK74_Reload
+  m_Name: M1911_Reload
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -351,7 +351,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: ca6d5e8cbe4af754cb36ad7eb4d19311, type: 2}
+  m_Motion: {fileID: 7400000, guid: 7da9ed73476e1d5499c2551e3af07f87, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -389,7 +389,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AK74_ShootInAim
+  m_Name: M1911_ShootInAim
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -403,7 +403,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 875c87679029152499e41d480516c172, type: 2}
+  m_Motion: {fileID: 7400000, guid: b14db1f4840e5a04b82aa71621f0d6bc, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
