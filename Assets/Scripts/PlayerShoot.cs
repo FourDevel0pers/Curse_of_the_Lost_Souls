@@ -22,11 +22,11 @@ public class PlayerShoot : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, range))
         {
-            EnemyController enemy = hit.collider.GetComponent<EnemyController>();  // Пытаемся найти врага по его компоненту
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);  // Если это враг, наносим урон
-            }
+            //EnemyController enemy = hit.collider.GetComponent<EnemyController>();  // Пытаемся найти врага по его компоненту
+            //if (enemy != null)
+            //{
+            //    enemy.TakeDamage(damage);  // Если это враг, наносим урон
+            //}
         }
     }
 }
