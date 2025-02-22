@@ -232,6 +232,7 @@ PlayerSettings:
   iOSMetalForceHardShadows: 0
   metalEditorSupport: 1
   metalAPIValidation: 1
+  metalCompileShaderBinary: 0
   iOSRenderExtraFrameOnPause: 0
   iosCopyPluginsCodeInsteadOfSymlink: 0
   appleDeveloperTeamID: 
@@ -868,11 +869,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 60660de6-cf7b-444d-9f28-e6b3d605b3f1
+  cloudProjectId: 444aabcc-99ee-473c-a124-04f3b286b9c1
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Prototipe
-  organizationId: skolzkiy
+  organizationId: skayrix
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
