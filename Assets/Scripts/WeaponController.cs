@@ -39,7 +39,7 @@ public class WeaponController : MonoBehaviour
         {
             shootingSpread = Mathf.Clamp(shootingSpread - weaponData.shootingSpreadDecreaseValue, weaponData.shootingSpread, weaponData.maxShootingSpread);
             float crossHairSize = ((PlayerUI.resolution.y / 100.0f) * shootingSpread) * 2;
-            // player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
+             player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
         }
     }
 
@@ -61,20 +61,17 @@ public class WeaponController : MonoBehaviour
             Destroy(curBullet, 3);
         }
         ammoInMag--;
-        // player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
+        player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
         if (!animator.GetBool("Aim"))
         {
             shootingSpread = Mathf.Clamp(shootingSpread + weaponData.shootingSpreadIncreaseValue, weaponData.shootingSpread, weaponData.maxShootingSpread);
             float crossHairSize = ((PlayerUI.resolution.y / 100.0f) * shootingSpread) * 2;
-            // player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
-            //transform.DOShakeRotation(.1f, new Vector3(3, 0, 0));
+            player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
         }
         else
         {
             mainCamera.Rotate(-weaponData.verticalSpray, 0, 0);
             mainCamera.parent.Rotate(0, (Random.Range(0, 2) == 0 ? -weaponData.horizontalSpray.leftDirection : weaponData.horizontalSpray.rightDirection), 0);
-            //mainCamera.DORotate(new Vector3(mainCamera.eulerAngles.x - weaponData.verticalSpray, mainCamera.eulerAngles.y, 0), Time.deltaTime);
-            //mainCamera.parent.DORotate(new Vector3(0, mainCamera.parent.eulerAngles.y + (Random.Range(0, 2) == 0 ? -weaponData.horizontalSpray.leftDirection : weaponData.horizontalSpray.rightDirection), 0), Time.deltaTime);
         }
         animator.SetTrigger("Shoot");
         if(weaponData.fireRate > 0) Invoke(nameof(Shoot), 60.0f / weaponData.fireRate);
@@ -91,7 +88,7 @@ public class WeaponController : MonoBehaviour
         int requiredAmmo = Mathf.Min(weaponData.ammoInMag - ammoInMag, ammo);
         ammoInMag += requiredAmmo;
         ammo -= requiredAmmo;
-        // player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
+        player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
         isReloading = false;
     }
 }
