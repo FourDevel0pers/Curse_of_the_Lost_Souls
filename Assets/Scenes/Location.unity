@@ -4513,8 +4513,8 @@ MonoBehaviour:
     sensitivity: 2
   playerUI:
     crossHair: {fileID: 1556829586}
-    alternateCrossHair: {fileID: 0}
-    ammoText: {fileID: 0}
+    alternateCrossHair: {fileID: 1741204974}
+    ammoText: {fileID: 260288386}
   controls:
     sprintKey: 304
     interactionKey: 101
