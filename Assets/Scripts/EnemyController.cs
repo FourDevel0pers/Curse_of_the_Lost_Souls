@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,143 +19,128 @@ public class EnemyController : MonoBehaviour
     public Transform attackPoint;
     public Transform waypoints;
 
+    [SerializeField] private List<GameObject> dropPrefabs;
+
     [HideInInspector] public PlayerController player;
     private NavMeshAgent agent;
-    private Animator animator;
+    public Animator animator;
     private Vector3 target;
-    private Transform distraction;
     private bool isAttacking = false;
     private bool isReloading = false;
-    private bool isStunned = false;
     private int curWaypointIndex = 0;
 
     private void Start()
     {
         curWaypointIndex = Random.Range(0, waypoints.childCount);
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
-        player = FindFirstObjectByType<PlayerController>();
+        player = FindObjectOfType<PlayerController>();
         agent.speed = enemyData.walkingSpeed;
+
         target = waypoints.GetChild(curWaypointIndex).position;
         agent.SetDestination(target);
+        animator.SetBool("IsWalking", true); // Включаем анимацию ходьбы
         health = enemyData.health;
+
+        enemyState = EnemyState.Patroling; // Устанавливаем начальное состояние как патрулирование
     }
 
     private void FixedUpdate()
     {
-        if (isStunned) return;
-        if (distraction)
-        {
-            if (Vector3.Distance(attackPoint.position, distraction.position) < enemyData.attackRange) StartCoroutine(Stun(3, "Inspect"));
-            return;
-        }
         switch (enemyState)
         {
             case EnemyState.Patroling:
-                Collider[] colliders = Physics.OverlapSphere(transform.position, enemyData.fieldOfView);
-                foreach (Collider col in colliders)
-                {
-                    if (Physics.Raycast(attackPoint.position, col.transform.position - attackPoint.position, out RaycastHit hit, enemyData.fieldOfView))
-                    {
-                        Debug.DrawLine(attackPoint.position, hit.point, Color.green, 1f);
-                        if (hit.collider.CompareTag("Player"))
-                        {
-                            StartChasing();
-                            CallEnemies();
-                            break;
-                        }
-                    }
-                }
-                if (Vector3.Distance(attackPoint.position, target) < enemyData.attackRange)
-                {
-                    curWaypointIndex++;
-                    if (curWaypointIndex > waypoints.childCount - 1) curWaypointIndex = 0;
-                    target = waypoints.GetChild(curWaypointIndex).position;
-                    agent.SetDestination(target);
-                }
+                Patrol();
                 break;
+
             case EnemyState.Chasing:
-                if (Vector3.Distance(attackPoint.position, player.transform.position) < enemyData.attackRange)
-                    enemyState = EnemyState.Attacking;
-                agent.SetDestination(player.transform.position);
+                ChasePlayer();
                 break;
+
             case EnemyState.Attacking:
-                Rotate(player.transform.position - transform.position, transform);
-                if (Vector3.Distance(attackPoint.position, player.transform.position) < enemyData.attackRange)
-                {
-                    if (!isAttacking && !isReloading)
-                    {
-                        isAttacking = true;
-                        agent.isStopped = true;
-                        StartCoroutine(Attack());
-                    }
-                }
-                else if (isAttacking)
-                {
-                    isAttacking = false;
-                    agent.isStopped = false;
-                    StopCoroutine(Attack());
-                    enemyState = EnemyState.Chasing;
-                }
-                return;
-            default:
-                return;
+                AttackPlayer();
+                break;
         }
-
-        //if (!animator.GetBool("Move") && !isAttacking) animator.SetBool("Move", true);
     }
 
-    public void GoToDistraction(Transform distractionObject)
+    private void Patrol()
     {
-        if (enemyState != EnemyState.Patroling) return;
-        distraction = distractionObject;
-        agent.SetDestination(distraction.position);
-    }
-
-    public void StartChasing()
-    {
-        if (enemyState != EnemyState.Patroling) return;
-        agent.speed = enemyData.runningSpeed;
-        enemyState = EnemyState.Chasing;
-    }
-
-    private void CallEnemies()
-    {
-        foreach (EnemyController enemy in FindObjectsByType<EnemyController>(FindObjectsSortMode.None))
+        // Проверяем, достиг ли враг текущей цели
+        if (Vector3.Distance(transform.position, target) < 1f)
         {
-            enemy.StartChasing();
+            curWaypointIndex++;
+            if (curWaypointIndex >= waypoints.childCount) curWaypointIndex = 0;
+            target = waypoints.GetChild(curWaypointIndex).position;
+            agent.SetDestination(target);
+        }
+
+        // Проверяем наличие игрока в поле зрения
+        Collider[] colliders = Physics.OverlapSphere(transform.position, enemyData.fieldOfView);
+        foreach (Collider col in colliders)
+        {
+            if (col.CompareTag("Player"))
+            {
+                if (Physics.Raycast(attackPoint.position, col.transform.position - attackPoint.position, out RaycastHit hit, enemyData.fieldOfView))
+                {
+                    StartChasing();
+                    break;
+                }
+            }
         }
     }
 
-    private void Rotate(Vector3 rotate, Transform objectOfRotation)
+    private void ChasePlayer()
     {
-        rotate.y = 0;
-        Quaternion rotation = Quaternion.LookRotation(rotate, Vector3.up);
-        objectOfRotation.rotation = Quaternion.Slerp(objectOfRotation.rotation, rotation, Time.deltaTime * agent.angularSpeed);
+        NavMeshPath path = new NavMeshPath();
+        if (agent.CalculatePath(player.transform.position, path) && path.status == NavMeshPathStatus.PathComplete)
+        {
+            agent.SetDestination(player.transform.position);
+            animator.SetBool("IsWalking", true);
+        }
+
+        if (Vector3.Distance(transform.position, player.transform.position) < enemyData.attackRange)
+        {
+            enemyState = EnemyState.Attacking;
+        }
     }
 
-
-    public IEnumerator Stun(float duration, string animationTriggerName = "Stun")
+    private void AttackPlayer()
     {
-        StopCoroutine(Stun(0));
-        //animator.SetTrigger(animationTriggerName);
-        isStunned = true;
-        agent.isStopped = true;
-        yield return new WaitForSeconds(duration);
-        isStunned = false;
-        agent.isStopped = false;
-        agent.SetDestination(target);
+        if (Vector3.Distance(transform.position, player.transform.position) > enemyData.attackRange)
+        {
+            enemyState = EnemyState.Chasing;
+            return;
+        }
+
+        if (!isAttacking && !isReloading)
+        {
+            isAttacking = true;
+            agent.isStopped = true;
+            animator.SetBool("IsWalking", false);
+            StartCoroutine(Attack());
+        }
     }
 
     private IEnumerator Attack()
     {
+        animator.SetTrigger("Attack");
         Collider[] colliders = Physics.OverlapSphere(attackPoint.position, enemyData.attackRange);
         foreach (Collider collider in colliders)
         {
-            if (collider.CompareTag("Player")) player.TakeDamage(enemyData.damage);
+            if (collider.CompareTag("Player"))
+            {
+                player.TakeDamage(enemyData.damage); // Наносим урон игроку
+            }
         }
-        yield return new WaitForSeconds(enemyData.attackDelay);
-        if (isAttacking) StartCoroutine(Attack());
+        yield return new WaitForSeconds(enemyData.attackDelay); // Задержка между ударами
+        isReloading = false;
+        isAttacking = false;
+        agent.isStopped = false;
+    }
+
+    private void StartChasing()
+    {
+        agent.speed = enemyData.runningSpeed;
+        enemyState = EnemyState.Chasing;
     }
 
     public void TakeDamage(float damage)
@@ -165,6 +151,26 @@ public class EnemyController : MonoBehaviour
 
     private void Die()
     {
-        Destroy(gameObject);
+        foreach (GameObject drop in dropPrefabs)
+        {
+            Instantiate(drop, transform.position + new Vector3(Random.Range(-.5f, .5f), 0, Random.Range(-.5f, .5f)), Random.rotation);
+        }
+        agent.isStopped = true;
+        animator.SetBool("IsWalking", false);
+        animator.SetTrigger("Die");
+        Destroy(GetComponent<Collider>());
+        Destroy(this);
+        Destroy(gameObject, 30f); // Удаляем врага через 30 секунд (для возможных анимаций)
+    }
+
+    // Обработка попадания пули (при использовании Collider)
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Bullet")) // Проверяем, если это пуля
+        {
+            TakeDamage(20); // Наносим урон
+            Destroy(other.gameObject); // Уничтожаем пулю
+        }
     }
 }
+
