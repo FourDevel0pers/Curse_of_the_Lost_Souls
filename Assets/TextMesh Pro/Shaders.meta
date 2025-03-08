@@ -1,6 +1,13 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/TextMesh Pro/Shaders.meta
 guid: e9f693669af91aa45ad615fc681ed29f
 folderAsset: yes
+========
+guid: 5fe25835f58497c4aadcd5b4f5719c64
+folderAsset: yes
+timeCreated: 1449577476
+licenseType: Store
+>>>>>>>> Stepan:Assets/AQUAS-Lite/Shaders.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

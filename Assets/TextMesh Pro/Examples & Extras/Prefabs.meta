@@ -1,9 +1,13 @@
 fileFormatVersion: 2
 guid: 5bff2544887143f5807c7d5059d07f79
 folderAsset: yes
+<<<<<<<< HEAD:Assets/TextMesh Pro/Examples & Extras/Prefabs.meta
 timeCreated: 1436068007
 licenseType: Pro
+========
+>>>>>>>> Stepan:Assets/Coconut Palm Tree Pack/Prefabs.meta
 DefaultImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

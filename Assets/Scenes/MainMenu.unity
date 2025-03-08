@@ -11334,25 +11334,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6268ad86b7bc39142a520d5792000ea8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadingProgressBarSlider: {fileID: 0}
-  tipText: {fileID: 0}
-  loadingScreen: {fileID: 0}
-  crossFadeAnimator: {fileID: 0}
-  resolutionDropdown: {fileID: 0}
-  fullscreenToggle: {fileID: 0}
-  vsyncToggle: {fileID: 0}
-  frameLimitSlider: {fileID: 0}
-  frameLimitText: {fileID: 0}
-  resolutions: []
-  qualityDropdown: {fileID: 0}
-  masterVolumeSlider: {fileID: 0}
-  musicVolumeSlider: {fileID: 0}
-  effectsVolumeSlider: {fileID: 0}
-  masterVolumeText: {fileID: 0}
-  musicVolumeText: {fileID: 0}
-  effectsVolumeText: {fileID: 0}
+  loadingProgressBarSlider: {fileID: 679549697}
+  tipText: {fileID: 1535293225}
+  loadingScreen: {fileID: 1607476545}
+  crossFadeAnimator: {fileID: 1602304700}
+  resolutionDropdown: {fileID: 1603166798}
+  fullscreenToggle: {fileID: 17978000}
+  vsyncToggle: {fileID: 438399508}
+  frameLimitSlider: {fileID: 400532674}
+  frameLimitText: {fileID: 540875248}
+  resolutions:
+  - {x: 800, y: 600}
+  - {x: 1600, y: 900}
+  - {x: 1920, y: 1080}
+  - {x: 2560, y: 1440}
+  - {x: 3840, y: 2160}
+  qualityDropdown: {fileID: 538207850}
+  masterVolumeSlider: {fileID: 122539733}
+  musicVolumeSlider: {fileID: 707121243}
+  effectsVolumeSlider: {fileID: 730861268}
+  masterVolumeText: {fileID: 591009434}
+  musicVolumeText: {fileID: 56057025}
+  effectsVolumeText: {fileID: 1962025789}
   main: {fileID: 0}
-  tipTexts: []
+  tipTexts:
+  - 
+  - 
+  - 
 --- !u!4 &1480208290
 Transform:
   m_ObjectHideFlags: 0

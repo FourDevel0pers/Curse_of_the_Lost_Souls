@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animators.meta
 guid: 5de43a4a6c6173d45a6fd9df9cd8ed20
+========
+guid: 8bd07dc4c8fcdeb4aaeac46202854722
+>>>>>>>> Stepan:Assets/TVE Collections/Unity - Terrain Demo/Prefabs Data/Textures.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

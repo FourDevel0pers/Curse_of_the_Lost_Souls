@@ -1,8 +1,14 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/TextMesh Pro/Examples & Extras/Scenes/12 - Link Example.unity.meta
 guid: 9747140c28254be2adc582210dfb89b8
 timeCreated: 1432629665
 licenseType: Store
+========
+guid: 38ec26cc54bd1344e913aa51f3b579ec
+folderAsset: yes
+>>>>>>>> Stepan:Assets/Coconut Palm Tree Pack/Materials.meta
 DefaultImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
