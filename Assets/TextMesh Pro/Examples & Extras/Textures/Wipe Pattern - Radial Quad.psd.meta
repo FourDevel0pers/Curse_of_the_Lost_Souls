@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Quad.psd.meta
 guid: 2b5e9ae96c5644d8bae932f8b4ca68a2
 timeCreated: 1464390481
 licenseType: Pro
+========
+guid: 34429bd1432eead4281c991a7f86aec7
+timeCreated: 1450274384
+licenseType: Store
+>>>>>>>> Stepan:Assets/AQUAS-Lite/Demo/Textures/Grass.jpg.meta
 TextureImporter:
   fileIDToRecycleName: {}
   serializedVersion: 2
@@ -26,8 +32,13 @@ TextureImporter:
   cubemapConvolutionSteps: 7
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
+<<<<<<<< HEAD:Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Quad.psd.meta
   textureFormat: 1
   maxTextureSize: 64
+========
+  textureFormat: -1
+  maxTextureSize: 2048
+>>>>>>>> Stepan:Assets/AQUAS-Lite/Demo/Textures/Grass.jpg.meta
   textureSettings:
     filterMode: 1
     aniso: 16
