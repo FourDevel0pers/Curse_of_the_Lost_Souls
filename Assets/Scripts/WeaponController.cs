@@ -1,71 +1,94 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
-    public float projectileSpeed = 20f;     
-    public GameObject projectilePrefab;  
-    public Transform firePoint;              
-    public float spreadIncrease = 0.5f;      
-    public float maxSpread = 5f;            
-    public float recoverySpeed = 2f;
-    public int maxAmmoInMag = 30;
-    public int maxAmmo = 300;
-    public int currentAmmo;                
-    public float reloadTime = 2f;           
-    private bool isReloading = false;       
-    private float currentSpread = 0.0f;     
-    private float nextFireTime = 0.0f;       
-    public float fireRate = 0.1f;           
+    public WeaponData weaponData;
+    public Transform firePoint;
 
-    void Start()
+    public int ammoInMag;
+    public int ammo;
+    
+    [HideInInspector] public Animator animator;
+    [HideInInspector] public Rigidbody weaponRigidbody;
+    [HideInInspector] public Collider weaponCollider;
+    [HideInInspector] public Outline weaponOutline;
+    [HideInInspector] public bool isShooting = false;
+    [HideInInspector] public bool isReloading = false;
+    [HideInInspector] public float shootingSpread;
+    [HideInInspector] public FirstPersonController player;
+
+    private Transform mainCamera;
+
+    private void Start()
     {
-        currentAmmo = maxAmmoInMag;
+        animator = GetComponent<Animator>();
+        weaponRigidbody = GetComponent<Rigidbody>();
+        weaponCollider = GetComponent<Collider>();
+        weaponOutline = GetComponent<Outline>();
+        mainCamera = Camera.main.transform;
+        ammo = weaponData.ammo;
+        ammoInMag = weaponData.ammoInMag;
+        shootingSpread = weaponData.shootingSpread;
     }
 
-    void Update()
+    private void FixedUpdate()
     {
-        if (isReloading) return; 
-
-        if (Input.GetButton("Fire1") && Time.time >= nextFireTime)
+        if (isShooting || !player) return;
+        if (!animator.GetBool("Aim"))
         {
-            if (currentAmmo > 0)
-            {
-                nextFireTime = Time.time + fireRate;  
-                ShootProjectile();                    
-            }
+            shootingSpread = Mathf.Clamp(shootingSpread - weaponData.shootingSpreadDecreaseValue, weaponData.shootingSpread, weaponData.maxShootingSpread);
+            float crossHairSize = ((PlayerUI.resolution.y / 100.0f) * shootingSpread) * 2;
+             player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
         }
+    }
 
-        if (!Input.GetButton("Fire1") && currentSpread > 0)
+    public void Shoot()
+    {
+        if (!isShooting || ammoInMag <= 0)
         {
-            currentSpread = Mathf.Max(currentSpread - recoverySpeed * Time.deltaTime, 0);
+            isShooting = false;
+            return;
         }
-
-        if (Input.GetKeyDown(KeyCode.R) && !isReloading) StartCoroutine(Reload());
+        for (int i = 0; i < weaponData.bulletsPerShot; i++)
+        {
+            GameObject curBullet = Instantiate(weaponData.bulletPrefab, firePoint.position, firePoint.rotation);
+            curBullet.transform.Rotate(Random.Range(-shootingSpread, shootingSpread), Random.Range(-shootingSpread, shootingSpread), 0);
+            curBullet.GetComponent<Rigidbody>().velocity = curBullet.transform.forward * weaponData.bulletSpeed;
+            curBullet.TryGetComponent(out BulletController bullet);
+            bullet.damage = weaponData.damage;
+            bullet.ownerTag = "Player";
+            Destroy(curBullet, 3);
+        }
+        ammoInMag--;
+        player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
+        if (!animator.GetBool("Aim"))
+        {
+            shootingSpread = Mathf.Clamp(shootingSpread + weaponData.shootingSpreadIncreaseValue, weaponData.shootingSpread, weaponData.maxShootingSpread);
+            float crossHairSize = ((PlayerUI.resolution.y / 100.0f) * shootingSpread) * 2;
+            player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
+        }
+        else
+        {
+            mainCamera.Rotate(-weaponData.verticalSpray, 0, 0);
+            mainCamera.parent.Rotate(0, (Random.Range(0, 2) == 0 ? -weaponData.horizontalSpray.leftDirection : weaponData.horizontalSpray.rightDirection), 0);
+        }
+        animator.SetTrigger("Shoot");
+        if(weaponData.fireRate > 0) Invoke(nameof(Shoot), 60.0f / weaponData.fireRate);
     }
 
-    private void ShootProjectile()
+    public IEnumerator Reload()
     {
-        currentAmmo--; 
-        currentSpread = Mathf.Min(currentSpread + spreadIncrease, maxSpread);
-        Vector3 shootDirection = Camera.main.transform.forward;
-        shootDirection.x += Random.Range(-currentSpread, currentSpread) * Mathf.Deg2Rad;
-        shootDirection.y += Random.Range(-currentSpread, currentSpread) * Mathf.Deg2Rad;
-        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-        projectile.transform.forward = shootDirection.normalized;
-        projectile.GetComponent<Rigidbody>().velocity = projectile.transform.forward * projectileSpeed;
-    }
-
-    private IEnumerator Reload()
-    {
-        if (maxAmmo == 0 || currentAmmo >= maxAmmoInMag) yield break;
+        if (ammoInMag >= weaponData.ammoInMag || ammo <= 0) yield break;
+        animator.SetTrigger("Reload");
+        animator.SetBool("Aim", false);
+        isShooting = false;
         isReloading = true;
-        yield return new WaitForSeconds(reloadTime);
-        int requiredAmmo = Mathf.Min(maxAmmo, maxAmmoInMag - currentAmmo);
-        if (maxAmmo < 0) requiredAmmo = currentAmmo - maxAmmoInMag;
-        else maxAmmo -= requiredAmmo;
-        currentAmmo += requiredAmmo;
+        yield return new WaitForSeconds(weaponData.reloadingDuration);
+        int requiredAmmo = Mathf.Min(weaponData.ammoInMag - ammoInMag, ammo);
+        ammoInMag += requiredAmmo;
+        ammo -= requiredAmmo;
+        player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
         isReloading = false;
     }
 }
