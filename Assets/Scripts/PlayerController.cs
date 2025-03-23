@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController controller;
     private Vector3 velocity;
     private bool isGrounded;
-    private GameObject currentWeapon;
+    [SerializeField] private GameObject currentWeapon;
 
     private void Start()
     {

@@ -28,6 +28,7 @@ public class EnemyController : MonoBehaviour
     private bool isAttacking = false;
     private bool isReloading = false;
     private int curWaypointIndex = 0;
+    [SerializeField] private AudioSource audio;
 
     private void Start()
     {
@@ -159,8 +160,9 @@ public class EnemyController : MonoBehaviour
         animator.SetBool("IsWalking", false);
         animator.SetTrigger("Die");
         Destroy(GetComponent<Collider>());
-        Destroy(this);
+        audio.Stop();
         Destroy(gameObject, 30f); // ”дал€ем врага через 30 секунд (дл€ возможных анимаций)
+        Destroy(this);
     }
 
     // ќбработка попадани€ пули (при использовании Collider)
