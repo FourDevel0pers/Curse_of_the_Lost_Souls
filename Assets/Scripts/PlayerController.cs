@@ -12,21 +12,22 @@ public class PlayerController : MonoBehaviour
     [Header("UI элементы")]
     public Slider healthSlider;
 
-    [Header("Настройки оружия")]
+    [Header("Настройки оружия и предметов")]
     public Transform weaponHolder;
+    public Transform handHolder;  // Новое — держатель предметов
     public float pickupRange = 2f;
     public KeyCode pickupKey = KeyCode.E;
     public KeyCode dropKey = KeyCode.Q;
-    public float dropForce = 5f; // Увеличил для более заметного выброса
+    public float dropForce = 5f;
 
     private CharacterController controller;
     private Vector3 velocity;
     private bool isGrounded;
     [SerializeField] private GameObject currentWeapon;
+    [SerializeField] private GameObject currentItem;  // Новое — текущий предмет в руках
 
     private void Start()
     {
-        // Инициализация CharacterController
         controller = GetComponent<CharacterController>();
         if (controller == null)
         {
@@ -34,25 +35,22 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // Настройка курсора
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Инициализация UI
         if (healthSlider != null)
         {
             healthSlider.maxValue = health;
             healthSlider.value = health;
         }
-        else
-        {
-            Debug.LogWarning("HealthSlider не назначен в инспекторе!");
-        }
 
-        // Проверка WeaponHolder
         if (weaponHolder == null)
         {
             Debug.LogWarning("WeaponHolder не назначен в инспекторе!");
+        }
+        if (handHolder == null)
+        {
+            Debug.LogWarning("HandHolder не назначен в инспекторе!");
         }
     }
 
@@ -62,17 +60,18 @@ public class PlayerController : MonoBehaviour
 
         MovePlayer();
 
-        // Поднятие и выброс оружия
         if (Input.GetKeyDown(pickupKey))
         {
             TryPickupWeapon();
+            TryPickupItem(); // Теперь игрок может поднимать предметы в руки
         }
+
         if (Input.GetKeyDown(dropKey))
         {
             DropWeapon();
+            DropItem(); // Теперь можно выбрасывать предметы
         }
 
-        // Тестовый урон
         if (Input.GetKeyDown(KeyCode.H))
         {
             TakeDamage(10f);
@@ -81,7 +80,6 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
-        // Проверка нахождения на земле
         isGrounded = controller.isGrounded;
 
         if (isGrounded && velocity.y < 0)
@@ -89,7 +87,6 @@ public class PlayerController : MonoBehaviour
             velocity.y = -2f;
         }
 
-        // Ввод для движения
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
 
@@ -102,51 +99,29 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = (transform.forward * verticalInput + transform.right * horizontalInput).normalized;
         controller.Move(moveDirection * currentSpeed * Time.deltaTime);
 
-        // Прыжок
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
         }
 
-        // Гравитация
         velocity.y += Physics.gravity.y * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
 
     private void TryPickupWeapon()
     {
-        if (currentWeapon != null || weaponHolder == null)
-        {
-            Debug.Log("Уже держите оружие или WeaponHolder не назначен!");
-            return;
-        }
+        if (currentWeapon != null || weaponHolder == null) return;
 
         Camera cam = Camera.main;
-        if (cam == null)
-        {
-            Debug.LogError("Главная камера не найдена!");
-            return;
-        }
+        if (cam == null) return;
 
         Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, pickupRange))
+        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
         {
             if (hit.collider.CompareTag("Weapon"))
             {
-                GameObject weapon = hit.collider.gameObject;
-                PickupWeapon(weapon);
-                Debug.Log("Оружие поднято: " + weapon.name);
+                PickupWeapon(hit.collider.gameObject);
             }
-            else
-            {
-                Debug.Log("Объект не является оружием: " + hit.collider.name);
-            }
-        }
-        else
-        {
-            Debug.Log("Ничего не найдено в радиусе " + pickupRange);
         }
     }
 
@@ -163,29 +138,17 @@ public class PlayerController : MonoBehaviour
             rb.isKinematic = true;
             rb.useGravity = false;
         }
-        else
-        {
-            Debug.LogWarning("У оружия " + weapon.name + " отсутствует Rigidbody!");
-        }
 
         Collider col = weapon.GetComponent<Collider>();
         if (col != null)
         {
             col.enabled = false;
         }
-        else
-        {
-            Debug.LogWarning("У оружия " + weapon.name + " отсутствует Collider!");
-        }
     }
 
     private void DropWeapon()
     {
-        if (currentWeapon == null || weaponHolder == null)
-        {
-            Debug.Log("Нет оружия для выброса!");
-            return;
-        }
+        if (currentWeapon == null || weaponHolder == null) return;
 
         GameObject weaponToDrop = currentWeapon;
         weaponToDrop.transform.SetParent(null);
@@ -199,11 +162,6 @@ public class PlayerController : MonoBehaviour
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             rb.AddForce(transform.forward * dropForce + Vector3.up * 0.5f, ForceMode.Impulse);
-            Debug.Log("Оружие выброшено: " + weaponToDrop.name + " с силой " + dropForce);
-        }
-        else
-        {
-            Debug.LogWarning("У выброшенного оружия отсутствует Rigidbody!");
         }
 
         Collider col = weaponToDrop.GetComponent<Collider>();
@@ -211,6 +169,78 @@ public class PlayerController : MonoBehaviour
         {
             col.enabled = true;
         }
+    }
+
+    private void TryPickupItem()
+    {
+        if (currentItem != null || handHolder == null) return;
+
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
+        {
+            if (hit.collider.CompareTag("Item"))
+            {
+                PickupItem(hit.collider.gameObject);
+            }
+        }
+    }
+
+    private void PickupItem(GameObject item)
+    {
+        if (currentItem != null)
+        {
+            DropItem();
+        }
+
+        currentItem = item;
+        item.transform.SetParent(handHolder);
+        item.transform.localPosition = Vector3.zero;
+        item.transform.localRotation = Quaternion.identity;
+
+        Rigidbody rb = item.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+            rb.useGravity = false;
+        }
+
+        Collider col = item.GetComponent<Collider>();
+        if (col != null)
+        {
+            col.enabled = false;
+        }
+
+        Debug.Log("Предмет в руках: " + item.name);
+    }
+
+    private void DropItem()
+    {
+        if (currentItem == null || handHolder == null) return;
+
+        GameObject itemToDrop = currentItem;
+        itemToDrop.transform.SetParent(null);
+        currentItem = null;
+
+        Rigidbody rb = itemToDrop.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.AddForce(transform.forward * dropForce + Vector3.up * 0.5f, ForceMode.Impulse);
+        }
+
+        Collider col = itemToDrop.GetComponent<Collider>();
+        if (col != null)
+        {
+            col.enabled = true;
+        }
+
+        Debug.Log("Предмет выброшен: " + itemToDrop.name);
     }
 
     public void TakeDamage(float damage)
@@ -233,12 +263,10 @@ public class PlayerController : MonoBehaviour
         {
             DropWeapon();
         }
+        if (currentItem != null)
+        {
+            DropItem();
+        }
         Destroy(gameObject);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawRay(transform.position, transform.forward * pickupRange);
     }
 }
