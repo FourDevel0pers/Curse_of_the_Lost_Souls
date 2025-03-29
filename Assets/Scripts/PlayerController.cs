@@ -25,9 +25,12 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     [SerializeField] private GameObject currentWeapon;
     [SerializeField] private GameObject currentItem;  // Новое — текущий предмет в руках
+    private Transform mainCamera;
+
 
     private void Start()
     {
+        mainCamera = Camera.main.transform;
         controller = GetComponent<CharacterController>();
         if (controller == null)
         {
@@ -175,11 +178,7 @@ public class PlayerController : MonoBehaviour
     {
         if (currentItem != null || handHolder == null) return;
 
-        Camera cam = Camera.main;
-        if (cam == null) return;
-
-        Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
+        if (Physics.Raycast(mainCamera.position,mainCamera.forward, out RaycastHit hit, pickupRange))
         {
             if (hit.collider.CompareTag("Item"))
             {
