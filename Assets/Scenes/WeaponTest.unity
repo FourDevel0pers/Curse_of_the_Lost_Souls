@@ -703,7 +703,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &271365841
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2717,43 +2717,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca83f058676b6f44a784f55787f9d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 0
-  curWeapon: {fileID: 0}
-  interaction:
-    interactionLayer:
-      m_Bits: 64
-    itemLayer:
-      m_Bits: 1
-    weaponPlace: {fileID: 1901789220}
-  playerStats:
-    health: 100
-    acceleration: 20
-    walkingSpeed: 3
-    runningSpeed: 6
-    jumpForce: 7.5
-    interactionDistance: 2.5
-    throwingForce: 10
-  playerCamera:
-    minCameraAngle: -80
-    maxCameraAngle: 80
-    sensitivity: 2
-  playerUI: {crossHair: {fileID: 1698635086}, alternateCrossHair: {fileID: 1049324423}, ammoText: {fileID: 71582435}}
-  controls:
-    sprintKey: 304
-    interactionKey: 101
-    reloadingKey: 114
-    dropKey: 120
-    hackKey: 9
-  isGrounded: 0
-  speed: 0
-  mainCamera: {fileID: 0}
-  rb: {fileID: 0}
-  interactionObject: {fileID: 0}
-  moveX: 0
-  moveY: 0
-  moveZ: 0
-  rotationX: 0
-  rotationY: 0
 --- !u!54 &1798272775
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3465,20 +3428,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor:
-    r: 1
-    g: 1
-    b: 1
-    a: 1
-  outlineWidth: 2
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
-  renderers: []
-  outlineMaskMaterial: {fileID: 0}
-  outlineFillMaterial: {fileID: 0}
-  needsUpdate: 1
 --- !u!54 &2716805421306734272
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4010,20 +3959,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor:
-    r: 1
-    g: 1
-    b: 1
-    a: 1
-  outlineWidth: 2
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
-  renderers: []
-  outlineMaskMaterial: {fileID: 0}
-  outlineFillMaterial: {fileID: 0}
-  needsUpdate: 1
 --- !u!54 &3892651057153901680
 Rigidbody:
   m_ObjectHideFlags: 0
