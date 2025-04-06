@@ -1225,6 +1225,9 @@ MonoBehaviour:
   maxAmmo: 300
   currentAmmo: 0
   reloadTime: 2
+  isReloading: 0
+  currentSpread: 0
+  nextFireTime: 0
   fireRate: 0.1
 --- !u!95 &626425962
 Animator:
@@ -2556,7 +2559,6 @@ GameObject:
   - component: {fileID: 1798272771}
   - component: {fileID: 1798272770}
   - component: {fileID: 1798272769}
-  - component: {fileID: 1798272768}
   - component: {fileID: 1798272775}
   m_Layer: 0
   m_Name: Player
@@ -2565,31 +2567,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1798272768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798272767}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c1e646b973486144ac7f35ad7afbadd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 0
-  moveSpeed: 20
-  sprintMultiplier: 1.5
-  jumpHeight: 1.5
-  healthSlider: {fileID: 0}
-  weaponHolder: {fileID: 0}
-  handHolder: {fileID: 0}
-  pickupRange: 2
-  pickupKey: 101
-  dropKey: 113
-  dropForce: 5
-  currentWeapon: {fileID: 0}
-  currentItem: {fileID: 0}
 --- !u!143 &1798272769
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2714,9 +2691,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1798272767}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eca83f058676b6f44a784f55787f9d6f, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c1e646b973486144ac7f35ad7afbadd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 100
+  moveSpeed: 5
+  sprintMultiplier: 1.5
+  jumpHeight: 1.5
+  healthSlider: {fileID: 0}
+  weaponHolder: {fileID: 1901789220}
+  handHolder: {fileID: 1901789220}
+  pickupRange: 30
+  pickupKey: 101
+  dropKey: 113
+  dropForce: 5
+  currentWeapon: {fileID: 0}
+  currentItem: {fileID: 0}
 --- !u!54 &1798272775
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3428,6 +3418,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!54 &2716805421306734272
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3498,6 +3494,9 @@ MonoBehaviour:
   maxAmmo: 300
   currentAmmo: 0
   reloadTime: 2
+  isReloading: 0
+  currentSpread: 0
+  nextFireTime: 0
   fireRate: 0.1
 --- !u!4 &2716805421306734275
 Transform:
@@ -3959,6 +3958,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!54 &3892651057153901680
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4029,6 +4034,9 @@ MonoBehaviour:
   maxAmmo: 300
   currentAmmo: 0
   reloadTime: 2
+  isReloading: 0
+  currentSpread: 0
+  nextFireTime: 0
   fireRate: 0.1
 --- !u!1001 &8223806014417819421
 PrefabInstance:
