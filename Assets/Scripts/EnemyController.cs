@@ -21,7 +21,7 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private List<GameObject> dropPrefabs;
 
-    [HideInInspector] public PlayerController player;
+    [HideInInspector] public FirstPersonController player;
     private NavMeshAgent agent;
     public Animator animator;
     private Vector3 target;
@@ -30,11 +30,13 @@ public class EnemyController : MonoBehaviour
     private int curWaypointIndex = 0;
     [SerializeField] private AudioSource audio;
 
+    private bool isDead = false;
+
     private void Start()
     {
         curWaypointIndex = Random.Range(0, waypoints.childCount);
         agent = GetComponent<NavMeshAgent>();
-        player = FindObjectOfType<PlayerController>();
+        player = FindObjectOfType<FirstPersonController>();
         agent.speed = enemyData.walkingSpeed;
 
         target = waypoints.GetChild(curWaypointIndex).position;
@@ -146,12 +148,14 @@ public class EnemyController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (isDead) return;
         health -= damage;
         if (health <= 0) Die();
     }
 
     private void Die()
     {
+        isDead = true;
         foreach (GameObject drop in dropPrefabs)
         {
             Instantiate(drop, transform.position + new Vector3(Random.Range(-.5f, .5f), 0, Random.Range(-.5f, .5f)), Random.rotation);
