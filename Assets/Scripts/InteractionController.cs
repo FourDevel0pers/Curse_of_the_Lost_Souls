@@ -16,12 +16,12 @@ public class InteractionController : MonoBehaviour
 
     private GameObject interactionObject;
     private Transform mainCamera;
-    private ResourceManager resourceManager;
+    private PlayerResources playerResources;
 
     private void Start()
     {
         mainCamera = Camera.main.transform;
-        resourceManager = ResourceManager.Instance;
+        playerResources = PlayerResources.Instance;
     }
 
     private void Update()
@@ -60,20 +60,20 @@ public class InteractionController : MonoBehaviour
         switch (resource.resourceType)
         {
             case ResourceType.Plank:
-                resourceManager.planks += amount;
-                plankText.text = resourceManager.planks.ToString();
+                playerResources.planks += amount;
+                plankText.text = playerResources.planks.ToString();
                 break;
             case ResourceType.Stone:
-                resourceManager.stones += amount;
-                stoneText.text = resourceManager.stones.ToString();
+                playerResources.stones += amount;
+                stoneText.text = playerResources.stones.ToString();
                 break;
             case ResourceType.Iron:
-                resourceManager.iron += amount;
-                ironText.text = resourceManager.iron.ToString();
+                playerResources.iron += amount;
+                ironText.text = playerResources.iron.ToString();
                 break;
             case ResourceType.Nail:
-                resourceManager.nails += amount;
-                nailText.text = resourceManager.nails.ToString();
+                playerResources.nails += amount;
+                nailText.text = playerResources.nails.ToString();
                 break;
             default:
                 return;

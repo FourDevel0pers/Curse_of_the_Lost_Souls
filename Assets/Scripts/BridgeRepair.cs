@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 using System.Collections;
 
 public class BridgeRepair : MonoBehaviour
@@ -10,18 +10,30 @@ public class BridgeRepair : MonoBehaviour
     public GameObject blackScreen;
     public float screenDuration = 2f;
 
-    public int requiredWood = 0;
-    public int requiredRope = 0;
+    public int requiredStone = 0;
+    public int requiredPlanks = 0;
+    public int requiredIron = 0;
+    public int requiredNails = 0;
+
+    public TextMeshProUGUI interactText; 
 
     private bool playerInRange = false;
     private PlayerResources playerResources;
+
+    private void Start()
+    {
+        playerResources = PlayerResources.Instance;
+        if (interactText != null)
+            interactText.gameObject.SetActive(false);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            playerResources = other.GetComponent<PlayerResources>();
+            if (interactText != null)
+                interactText.gameObject.SetActive(true);
         }
     }
 
@@ -30,7 +42,9 @@ public class BridgeRepair : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            playerResources = null;
+
+            if (interactText != null)
+                interactText.gameObject.SetActive(false);
         }
     }
 
@@ -46,15 +60,27 @@ public class BridgeRepair : MonoBehaviour
     {
         if (playerResources == null) return;
 
-        if (playerResources.wood >= requiredWood && playerResources.rope >= requiredRope)
+        bool hasResources =
+            playerResources.stones >= requiredStone &&
+            playerResources.planks >= requiredPlanks &&
+            playerResources.iron >= requiredIron &&
+            playerResources.nails >= requiredNails;
+
+        if (hasResources)
         {
-            playerResources.wood -= requiredWood;
-            playerResources.rope -= requiredRope;
+            playerResources.stones -= requiredStone;
+            playerResources.planks -= requiredPlanks;
+            playerResources.iron -= requiredIron;
+            playerResources.nails -= requiredNails;
+
+            if (interactText != null)
+                interactText.gameObject.SetActive(false);
+
             StartCoroutine(RepairSequence());
         }
         else
         {
-            Debug.Log("Not enough resources!");
+            Debug.Log("Not enough resources to repair the bridge!");
         }
     }
 
@@ -66,7 +92,7 @@ public class BridgeRepair : MonoBehaviour
         brokenBridge.SetActive(false);
         fixedBridge.SetActive(true);
         blackScreen.SetActive(false);
+        Destroy (gameObject);
     }
-
 }
 

@@ -2,8 +2,17 @@ using UnityEngine;
 
 public class PlayerResources : MonoBehaviour
 {
-    public int wood = 0;
-    public int rope = 0;
+    public static PlayerResources Instance;
 
-    // ƒобавь сюда методы по добыче ресурсов
+    public int stones;
+    public int planks;
+    public int iron;
+    public int nails;
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else Destroy(this);
+    }
 }
