@@ -11351,7 +11351,7 @@ MonoBehaviour:
   masterVolumeText: {fileID: 0}
   musicVolumeText: {fileID: 0}
   effectsVolumeText: {fileID: 0}
-  main: {fileID: 0}
+  main: {fileID: 24100000, guid: 3102aa9d4c702254daaf89d8451af6b2, type: 2}
   tipTexts: []
 --- !u!4 &1480208290
 Transform:
