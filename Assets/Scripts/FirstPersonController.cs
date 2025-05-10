@@ -97,6 +97,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale <= 0) return;
         if (Input.GetKeyDown(controls.sprintKey))
         {
             speed = playerStats.runningSpeed;
