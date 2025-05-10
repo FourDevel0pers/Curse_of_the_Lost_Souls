@@ -1233,7 +1233,6 @@ MonoBehaviour:
   m_Textures3: []
   m_Tangents: []
   m_Colors: []
-  <userCollisions>k__BackingField: 0
   m_UnwrapParameters:
     m_HardAngle: 88
     m_PackMargin: 20
@@ -1247,10 +1246,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
-  m_SelectedCacheDirty: 1
-  m_SelectedSharedVerticesCount: 0
-  m_SelectedCoincidentVertexCount: 0
-  m_SelectedCoincidentVertices: 
 --- !u!23 &197936699
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2060,7 +2055,7 @@ PrefabInstance:
     - target: {fileID: -5264738590183008102, guid: 90e6e3e05613b6942979075cfaf65038, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: -6181396518072428055, guid: 9254bfae119190d4ab192d51a937d009, type: 3}
     - target: {fileID: -5050338812914935932, guid: 90e6e3e05613b6942979075cfaf65038, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -2084,7 +2079,7 @@ PrefabInstance:
     - target: {fileID: 6312272423470829741, guid: 90e6e3e05613b6942979075cfaf65038, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5717229255391239209, guid: 0e99ec5f6d29b1c41bfb37ba45897c59, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: -3990956557573703513, guid: 90e6e3e05613b6942979075cfaf65038, type: 3}
@@ -2093,18 +2088,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3291369258539914720, guid: 90e6e3e05613b6942979075cfaf65038, type: 3}
       insertIndex: -1
       addedObject: {fileID: 256251536}
-    - targetCorrespondingSourceObject: {fileID: 3291369258539914720, guid: 90e6e3e05613b6942979075cfaf65038, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 256251535}
     - targetCorrespondingSourceObject: {fileID: 522468700041336571, guid: 90e6e3e05613b6942979075cfaf65038, type: 3}
       insertIndex: -1
       addedObject: {fileID: 256251534}
     - targetCorrespondingSourceObject: {fileID: 522468700041336571, guid: 90e6e3e05613b6942979075cfaf65038, type: 3}
       insertIndex: -1
       addedObject: {fileID: 256251533}
-    - targetCorrespondingSourceObject: {fileID: 522468700041336571, guid: 90e6e3e05613b6942979075cfaf65038, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 256251540}
   m_SourcePrefab: {fileID: 100100000, guid: 90e6e3e05613b6942979075cfaf65038, type: 3}
 --- !u!1 &256251531 stripped
 GameObject:
@@ -2158,46 +2147,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.31256416, y: 1.1875197, z: 8.38975}
   m_Center: {x: 1.2475845, y: 0.3413959, z: -0.0000000015657107}
---- !u!114 &256251535
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 256251532}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8233d90336aea43098adf6dbabd606a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MeshFormatVersion: 0
-  m_Faces: []
-  m_SharedVertices: []
-  m_SharedTextures: []
-  m_Positions: []
-  m_Textures0: []
-  m_Textures2: []
-  m_Textures3: []
-  m_Tangents: []
-  m_Colors: []
-  <userCollisions>k__BackingField: 0
-  m_UnwrapParameters:
-    m_HardAngle: 88
-    m_PackMargin: 20
-    m_AngleError: 8
-    m_AreaError: 15
-  m_PreserveMeshAssetOnDestroy: 0
-  assetGuid: 
-  m_Mesh: {fileID: 0}
-  m_VersionIndex: 0
-  m_IsSelectable: 1
-  m_SelectedFaces: 
-  m_SelectedEdges: []
-  m_SelectedVertices: 
-  m_SelectedCacheDirty: 1
-  m_SelectedSharedVerticesCount: 0
-  m_SelectedCoincidentVertexCount: 0
-  m_SelectedCoincidentVertices: 
 --- !u!65 &256251536
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2219,46 +2168,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.9994411, y: 2.8316462, z: 0.27725315}
   m_Center: {x: -0.000012793449, y: 0.9952253, z: 2.8073487}
---- !u!114 &256251540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 256251531}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8233d90336aea43098adf6dbabd606a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MeshFormatVersion: 0
-  m_Faces: []
-  m_SharedVertices: []
-  m_SharedTextures: []
-  m_Positions: []
-  m_Textures0: []
-  m_Textures2: []
-  m_Textures3: []
-  m_Tangents: []
-  m_Colors: []
-  <userCollisions>k__BackingField: 0
-  m_UnwrapParameters:
-    m_HardAngle: 88
-    m_PackMargin: 20
-    m_AngleError: 8
-    m_AreaError: 15
-  m_PreserveMeshAssetOnDestroy: 0
-  assetGuid: 
-  m_Mesh: {fileID: 0}
-  m_VersionIndex: 0
-  m_IsSelectable: 1
-  m_SelectedFaces: 
-  m_SelectedEdges: []
-  m_SelectedVertices: 
-  m_SelectedCacheDirty: 1
-  m_SelectedSharedVerticesCount: 0
-  m_SelectedCoincidentVertexCount: 0
-  m_SelectedCoincidentVertices: 
 --- !u!1 &271564264
 GameObject:
   m_ObjectHideFlags: 0
@@ -32329,7 +32238,6 @@ MonoBehaviour:
   m_Textures3: []
   m_Tangents: []
   m_Colors: []
-  <userCollisions>k__BackingField: 0
   m_UnwrapParameters:
     m_HardAngle: 88
     m_PackMargin: 20
@@ -32337,16 +32245,12 @@ MonoBehaviour:
     m_AreaError: 15
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 1950620316}
   m_VersionIndex: 0
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
-  m_SelectedCacheDirty: 0
-  m_SelectedSharedVerticesCount: 0
-  m_SelectedCoincidentVertexCount: 0
-  m_SelectedCoincidentVertices: 
 --- !u!1 &1098973000
 GameObject:
   m_ObjectHideFlags: 0
@@ -41563,7 +41467,6 @@ GameObject:
   - component: {fileID: 1826467583}
   - component: {fileID: 1826467582}
   - component: {fileID: 1826467581}
-  - component: {fileID: 1826467580}
   m_Layer: 0
   m_Name: bridge_hanging_01 (1)
   m_TagString: Untagged
@@ -41586,46 +41489,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1803979300}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1826467580
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826467578}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8233d90336aea43098adf6dbabd606a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MeshFormatVersion: 0
-  m_Faces: []
-  m_SharedVertices: []
-  m_SharedTextures: []
-  m_Positions: []
-  m_Textures0: []
-  m_Textures2: []
-  m_Textures3: []
-  m_Tangents: []
-  m_Colors: []
-  <userCollisions>k__BackingField: 0
-  m_UnwrapParameters:
-    m_HardAngle: 88
-    m_PackMargin: 20
-    m_AngleError: 8
-    m_AreaError: 15
-  m_PreserveMeshAssetOnDestroy: 0
-  assetGuid: 
-  m_Mesh: {fileID: 0}
-  m_VersionIndex: 0
-  m_IsSelectable: 1
-  m_SelectedFaces: 
-  m_SelectedEdges: []
-  m_SelectedVertices: 
-  m_SelectedCacheDirty: 0
-  m_SelectedSharedVerticesCount: 0
-  m_SelectedCoincidentVertexCount: 0
-  m_SelectedCoincidentVertices: 
 --- !u!65 &1826467581
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -41680,7 +41543,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 2
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89

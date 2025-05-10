@@ -1,0 +1,5 @@
+newmtl bridge_hanging_01_AlbedoTransparency
+map_Kd bridge_hanging_01_AlbedoTransparency.png
+Kd 1 1 1
+d 1
+
