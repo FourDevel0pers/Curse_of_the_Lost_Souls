@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class Interaction
@@ -37,6 +38,7 @@ public class PlayerUI
     public RectTransform crossHair;
     public RectTransform alternateCrossHair;
     public TextMeshProUGUI ammoText;
+    public Slider HealthBar;
 }
 
 [System.Serializable]
@@ -240,6 +242,7 @@ public class FirstPersonController : MonoBehaviour
     public void TakeDamage(float damage)
     {
         health -= damage;
+        playerUI.HealthBar.value = health/playerStats.health;
         if (health <= 0)
         {
             Die();

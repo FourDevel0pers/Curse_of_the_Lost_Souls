@@ -289,6 +289,8 @@ MonoBehaviour:
   isReloading: 0
   shootingSpread: 0
   player: {fileID: 0}
+  audioSource: {fileID: 0}
+  shotSound: {fileID: 0}
 --- !u!1 &15121259
 GameObject:
   m_ObjectHideFlags: 0
@@ -28823,6 +28825,8 @@ MonoBehaviour:
   isReloading: 0
   shootingSpread: 0
   player: {fileID: 0}
+  audioSource: {fileID: 0}
+  shotSound: {fileID: 0}
 --- !u!95 &727514895 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 1556312176, guid: af9f138ca1214ae41beb955d1406704e, type: 3}
@@ -32146,9 +32150,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 100
+  m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 100
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -41147,6 +41151,7 @@ MonoBehaviour:
     crossHair: {fileID: 1312693644}
     alternateCrossHair: {fileID: 1895692717}
     ammoText: {fileID: 313764813}
+    HealthBar: {fileID: 1061449983}
   controls: {fileID: 11400000, guid: f84ece83a189d4b43b0cac59ebc30df1, type: 2}
   rb: {fileID: 0}
   interactionObject: {fileID: 0}
