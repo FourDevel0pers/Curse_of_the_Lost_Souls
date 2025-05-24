@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1111490385919427425}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.90629554, z: -0, w: 0.42264456}
+  m_LocalRotation: {x: 0, y: -0.90629673, z: 0, w: 0.42264205}
   m_LocalPosition: {x: 10, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -170,6 +170,7 @@ MonoBehaviour:
     crossHair: {fileID: 0}
     alternateCrossHair: {fileID: 0}
     ammoText: {fileID: 0}
+    HealthBar: {fileID: 0}
   controls: {fileID: 11400000, guid: f84ece83a189d4b43b0cac59ebc30df1, type: 2}
   rb: {fileID: 0}
   interactionObject: {fileID: 0}
