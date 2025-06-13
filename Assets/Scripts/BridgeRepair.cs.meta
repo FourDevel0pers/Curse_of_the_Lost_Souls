@@ -3,7 +3,11 @@ guid: 642cd3ee96593b3438835aaa8c82ace3
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - brokenBridge: {instanceID: 0}
+  - fixedBridge: {instanceID: 0}
+  - blackScreen: {instanceID: 0}
+  - interactText: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

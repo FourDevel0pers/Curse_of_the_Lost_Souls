@@ -289,7 +289,7 @@ MonoBehaviour:
   isReloading: 0
   shootingSpread: 0
   player: {fileID: 0}
-  audioSource: {fileID: 0}
+  weaponAudioSource: {fileID: 0}
   shotSound: {fileID: 0}
 --- !u!1 &15121259
 GameObject:
@@ -28825,7 +28825,7 @@ MonoBehaviour:
   isReloading: 0
   shootingSpread: 0
   player: {fileID: 0}
-  audioSource: {fileID: 0}
+  weaponAudioSource: {fileID: 0}
   shotSound: {fileID: 0}
 --- !u!95 &727514895 stripped
 Animator:
