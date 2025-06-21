@@ -289,8 +289,8 @@ MonoBehaviour:
   isReloading: 0
   shootingSpread: 0
   player: {fileID: 0}
-  weaponAudioSource: {fileID: 0}
-  shotSound: {fileID: 0}
+  weaponAudioSource: {fileID: 1563390803}
+  shotSound: {fileID: 8300000, guid: 98cc2b88fc338184995ee1453947aeb2, type: 3}
 --- !u!1 &15121259
 GameObject:
   m_ObjectHideFlags: 0
@@ -27880,7 +27880,7 @@ MonoBehaviour:
   shootingSpread: 0
   player: {fileID: 0}
   weaponAudioSource: {fileID: 0}
-  shotSound: {fileID: 0}
+  shotSound: {fileID: 8300000, guid: 46e288659c2f82944ba8d325e70a1f1f, type: 3}
 --- !u!95 &727514895 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 1556312176, guid: af9f138ca1214ae41beb955d1406704e, type: 3}
@@ -37266,6 +37266,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!82 &1563390803 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 8932413866010315168, guid: 0ee59852688318446887b99e86683e35, type: 3}
+  m_PrefabInstance: {fileID: 1837379541}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1592315340
 PrefabInstance:
   m_ObjectHideFlags: 0

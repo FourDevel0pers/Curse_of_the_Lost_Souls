@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75c696d9215bee14e8ff6fdeee7be1d4, type: 3}
   m_Name: Shotgun
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 80
   ammoInMag: 2
   ammo: 24
   bulletsPerShot: 24
@@ -28,7 +28,5 @@ MonoBehaviour:
     rightDirection: 4
   reloadingDuration: 3
   bulletSpeed: 25
-  bulletPrefab: {fileID: 3882421529995028313, guid: 92e67652fdc342a45b6c43838011b25f,
-    type: 3}
-  weaponModel: {fileID: 3048994217932476619, guid: 7756641049e3a8744a03634d0965edb6,
-    type: 3}
+  bulletPrefab: {fileID: 3882421529995028313, guid: 92e67652fdc342a45b6c43838011b25f, type: 3}
+  weaponModel: {fileID: 3048994217932476619, guid: 7756641049e3a8744a03634d0965edb6, type: 3}
