@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
-﻿using System.Collections;
-=======
->>>>>>> Stashed changes
 using UnityEngine;
 using System.Collections;
 
@@ -24,9 +20,11 @@ public class WeaponController : MonoBehaviour
     // 🔊 Добавленные переменные для звука
     public AudioSource weaponAudioSource;
     public AudioClip shotSound;
+    private Transform mainCamera;
 
     private void Start()
     {
+        mainCamera=Camera.main.transform;
         animator = GetComponent<Animator>();
         weaponRigidbody = GetComponent<Rigidbody>();
         weaponCollider = GetComponent<Collider>();
@@ -38,7 +36,6 @@ public class WeaponController : MonoBehaviour
 
     public void Shoot()
     {
-<<<<<<< Updated upstream
         if (!isShooting || ammoInMag <= 0)
         {
             isShooting = false;
@@ -47,7 +44,7 @@ public class WeaponController : MonoBehaviour
 
         for (int i = 0; i < weaponData.bulletsPerShot; i++)
         {
-            GameObject curBullet = Instantiate(weaponData.bulletPrefab, firePoint.position, firePoint.rotation);
+            GameObject curBullet = Instantiate(weaponData.bulletPrefab, shootPoint.position, shootPoint.rotation);
             curBullet.transform.Rotate(Random.Range(-shootingSpread, shootingSpread), Random.Range(-shootingSpread, shootingSpread), 0);
             curBullet.GetComponent<Rigidbody>().velocity = curBullet.transform.forward * weaponData.bulletSpeed;
             curBullet.TryGetComponent(out BulletController bullet);
@@ -64,7 +61,6 @@ public class WeaponController : MonoBehaviour
             shootingSpread = Mathf.Clamp(shootingSpread + weaponData.shootingSpreadIncreaseValue, weaponData.shootingSpread, weaponData.maxShootingSpread);
             float crossHairSize = ((PlayerUI.resolution.y / 100.0f) * shootingSpread) * 2;
             player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
-=======
         if (ammoInMag <= 0) return;
 
         ammoInMag--;
@@ -73,13 +69,11 @@ public class WeaponController : MonoBehaviour
         if (weaponData.shootSound)
         {
             AudioSource.PlayClipAtPoint(weaponData.shootSound, shootPoint.position);
->>>>>>> Stashed changes
         }
 
         Ray ray = new Ray(shootPoint.position, shootPoint.forward);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-<<<<<<< Updated upstream
             mainCamera.Rotate(-weaponData.verticalSpray, 0, 0);
             mainCamera.parent.Rotate(0, (Random.Range(0, 2) == 0 ? -weaponData.horizontalSpray.leftDirection : weaponData.horizontalSpray.rightDirection), 0);
         }
@@ -94,7 +88,6 @@ public class WeaponController : MonoBehaviour
         {
             Invoke(nameof(Shoot), 60.0f / weaponData.fireRate);
         }
-=======
             if (hit.collider.CompareTag("Enemy"))
             {
                 hit.collider.GetComponent<EnemyController>()?.TakeDamage(weaponData.damage);
@@ -108,12 +101,10 @@ public class WeaponController : MonoBehaviour
     {
         yield return new WaitForSeconds(weaponData.fireRate);
         if (isShooting) Shoot();
->>>>>>> Stashed changes
     }
 
     public IEnumerator Reload()
     {
-<<<<<<< Updated upstream
         if (ammoInMag >= weaponData.ammoInMag || ammo <= 0) yield break;
 
         animator.SetTrigger("Reload");
@@ -128,7 +119,6 @@ public class WeaponController : MonoBehaviour
         ammo -= requiredAmmo;
 
         player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
-=======
         if (isReloading || ammo <= 0 || ammoInMag == weaponData.ammoInMag) yield break;
 
         isReloading = true;
@@ -139,7 +129,6 @@ public class WeaponController : MonoBehaviour
         int ammoToReload = Mathf.Min(weaponData.ammoInMag - ammoInMag, ammo);
         ammoInMag += ammoToReload;
         ammo -= ammoToReload;
->>>>>>> Stashed changes
         isReloading = false;
 
         player.UpdateUI();

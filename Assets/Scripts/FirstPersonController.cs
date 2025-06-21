@@ -89,12 +89,9 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
-<<<<<<< Updated upstream
         if (Time.timeScale <= 0) return;
-=======
         if (!mainCamera || !rb) return;
 
->>>>>>> Stashed changes
         if (Input.GetKeyDown(controls.sprintKey))
         {
             speed = playerStats.runningSpeed;

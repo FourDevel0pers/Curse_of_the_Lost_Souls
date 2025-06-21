@@ -242,17 +242,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: 583433a7b223738489942b2153076a57, type: 2}
-  firePoint: {fileID: 4654581073773395804}
+  shootPoint: {fileID: 4654581073773395804}
+  animator: {fileID: 1449772077071218752}
+  weaponRigidbody: {fileID: 6322105771478346107}
+  weaponCollider: {fileID: 4279412278462373777}
+  weaponOutline: {fileID: 7248120682850190769}
+  player: {fileID: 0}
+  shootingSpread: 0
   ammoInMag: 0
   ammo: 0
-  animator: {fileID: 0}
-  weaponRigidbody: {fileID: 0}
-  weaponCollider: {fileID: 0}
-  weaponOutline: {fileID: 0}
   isShooting: 0
   isReloading: 0
-  shootingSpread: 0
-  player: {fileID: 0}
   weaponAudioSource: {fileID: 8932413866010315168}
   shotSound: {fileID: 8300000, guid: e5b7d1c4f3a5180428899c296b8bceeb, type: 3}
 --- !u!95 &1449772077071218752
