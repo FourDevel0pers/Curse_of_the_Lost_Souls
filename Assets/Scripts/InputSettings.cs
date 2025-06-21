@@ -5,6 +5,7 @@ public class InputSettings : ScriptableObject
 {
     public KeyCode sprintKey = KeyCode.LeftShift;
     public KeyCode interactKey = KeyCode.E;
+    public KeyCode meleeKey=KeyCode.V;
     public KeyCode dropKey = KeyCode.G;
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode pauseKey = KeyCode.Escape;

@@ -41,6 +41,9 @@ public class WeaponData : ScriptableObject
     public GameObject bulletPrefab;
     [Space(10)]
 
+    [Header("Audio")]
+    public AudioClip shootSound;
+
     [Header("Model")]
     public GameObject weaponModel;
 }
