@@ -14,12 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprintKey: 304
   interactKey: 101
+  meleeKey: 323
   dropKey: 120
   jumpKey: 32
   pauseKey: 27
   shootKey: 323
   aimKey: 324
   reloadKey: 114
-  crouchKey: 306
-  crouchToggleKey: 99
   hackKey: 9

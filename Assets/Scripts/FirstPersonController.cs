@@ -1,3 +1,4 @@
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -41,21 +42,12 @@ public class PlayerUI
     public Slider HealthBar;
 }
 
-[System.Serializable]
-public class Controls
-{
-    public KeyCode sprintKey;
-    public KeyCode interactionKey;
-    public KeyCode reloadingKey;
-    public KeyCode dropKey;
-    public KeyCode hackKey;
-}
 
 public class FirstPersonController : MonoBehaviour
 {
     public float health;
-
     public WeaponController curWeapon;
+    public MeleeWeaponController curMeleeWeapon;
     public Interaction interaction;
     public PlayerStats playerStats;
     public PlayerCamera playerCamera;
@@ -68,43 +60,43 @@ public class FirstPersonController : MonoBehaviour
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public GameObject interactionObject;
 
-    float moveX, moveY, moveZ;
-    float rotationX, rotationY;
+    private float moveX, moveY, moveZ;
+    private float rotationX, rotationY;
 
     private void Start()
     {
         mainCamera = Camera.main;
+        if (!mainCamera)
+        {
+            Debug.LogError("Основная камера не найдена!");
+            return;
+        }
+
         rb = GetComponent<Rigidbody>();
+        if (!rb)
+        {
+            Debug.LogError("Rigidbody не найден на игроке!");
+            return;
+        }
+
         speed = playerStats.walkingSpeed;
         health = playerStats.health;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        if (curWeapon)
-        {
-            curWeapon.player = this;
-            playerUI.ammoText.text = $"{curWeapon.weaponData.ammoInMag} / {curWeapon.weaponData.ammo}";
-            playerUI.ammoText.color = Color.white;
-            playerUI.crossHair.gameObject.SetActive(true);
-            playerUI.alternateCrossHair.gameObject.SetActive(true);
-        }
-        else
-        {
-            playerUI.ammoText.text = "...";
-            playerUI.ammoText.color = Color.gray;
-            playerUI.crossHair.gameObject.SetActive(false);
-            playerUI.alternateCrossHair.gameObject.SetActive(true);
-        }
+        UpdateUI();
     }
 
     private void Update()
     {
         if (Time.timeScale <= 0) return;
+        if (!mainCamera || !rb) return;
+
         if (Input.GetKeyDown(controls.sprintKey))
         {
             speed = playerStats.runningSpeed;
         }
-        else if(Input.GetKeyUp(controls.sprintKey))
+        else if (Input.GetKeyUp(controls.sprintKey))
         {
             speed = playerStats.walkingSpeed;
         }
@@ -114,67 +106,79 @@ public class FirstPersonController : MonoBehaviour
         moveY = isGrounded && moveY > 0 ? moveY : rb.velocity.y;
         moveZ = Input.GetAxis("Vertical") * playerStats.acceleration * rb.mass;
 
-        //Pick Up Weapon
-
         if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward,
             out RaycastHit hit, playerStats.interactionDistance, interaction.interactionLayer))
         {
             Debug.DrawLine(mainCamera.transform.position, hit.point, Color.red, 1f);
-            if (!hit.transform.gameObject.Equals(interactionObject))
+            if (interactionObject != hit.transform.gameObject)
             {
-                if (interactionObject) interactionObject.GetComponent<Outline>().enabled = false;
+                if (interactionObject && interactionObject.TryGetComponent(out Outline outline))
+                {
+                    outline.enabled = false;
+                }
                 interactionObject = hit.transform.gameObject;
-                interactionObject.GetComponent<Outline>().enabled = true;
+                if (interactionObject.TryGetComponent(out Outline newOutline))
+                {
+                    newOutline.enabled = true;
+                }
             }
         }
         else if (interactionObject)
         {
-            if (interactionObject.TryGetComponent( out Outline outline)) outline.enabled = false;
+            if (interactionObject.TryGetComponent(out Outline outline))
+            {
+                outline.enabled = false;
+            }
             interactionObject = null;
         }
 
         if (Input.GetKeyDown(controls.interactKey)) Interact();
         if (Input.GetKeyDown(controls.dropKey)) DropWeapon();
 
-        //Weapon
-        if (!curWeapon) return;
-        if(Input.GetKeyDown(controls.aimKey))
+        if (Input.GetKeyDown(controls.meleeKey) && curMeleeWeapon != null)
         {
-            curWeapon.animator.SetBool("Aim", true);
-            playerUI.crossHair.gameObject.SetActive(false);
-            playerUI.alternateCrossHair.gameObject.SetActive(false);
-            curWeapon.shootingSpread = curWeapon.weaponData.aimShootingSpread;
-        }
-        else if(Input.GetKeyUp(controls.aimKey))
-        {
-            curWeapon.animator.SetBool("Aim", false);
-            playerUI.crossHair.gameObject.SetActive(true);
-            playerUI.alternateCrossHair.gameObject.SetActive(true);
-            curWeapon.shootingSpread = curWeapon.weaponData.shootingSpread;
+            curMeleeWeapon.Attack();
         }
 
-        if(Input.GetKeyDown(controls.shootKey) && !curWeapon.isShooting && !curWeapon.isReloading)
+        if (curWeapon)
         {
-            curWeapon.isShooting = true;
-            curWeapon.Shoot();
-        }
-        else if(Input.GetKeyUp(controls.shootKey) && curWeapon.isShooting)
-        {
-            curWeapon.isShooting = false;
-        }
+            if (Input.GetKeyDown(controls.aimKey))
+            {
+                curWeapon.animator.SetBool("Aim", true);
+                if (playerUI.crossHair) playerUI.crossHair.gameObject.SetActive(false);
+                if (playerUI.alternateCrossHair) playerUI.alternateCrossHair.gameObject.SetActive(false);
+                curWeapon.shootingSpread = curWeapon.weaponData.aimShootingSpread;
+            }
+            else if (Input.GetKeyUp(controls.aimKey))
+            {
+                curWeapon.animator.SetBool("Aim", false);
+                if (playerUI.crossHair) playerUI.crossHair.gameObject.SetActive(true);
+                if (playerUI.alternateCrossHair) playerUI.alternateCrossHair.gameObject.SetActive(true);
+                curWeapon.shootingSpread = curWeapon.weaponData.shootingSpread;
+            }
 
-        if(Input.GetKeyDown(controls.reloadKey))
-        {
-            curWeapon.StartCoroutine(curWeapon.Reload());
+            if (Input.GetKeyDown(controls.shootKey) && !curWeapon.isShooting && !curWeapon.isReloading)
+            {
+                curWeapon.isShooting = true;
+                curWeapon.Shoot();
+            }
+            else if (Input.GetKeyUp(controls.shootKey) && curWeapon.isShooting)
+            {
+                curWeapon.isShooting = false;
+            }
+
+            if (Input.GetKeyDown(controls.reloadKey))
+            {
+                curWeapon.StartCoroutine(curWeapon.Reload());
+            }
         }
     }
 
     private void FixedUpdate()
     {
-        //Movement
-        rb.AddForce(transform.right * moveX + transform.forward * moveZ);
+        if (!rb) return;
 
-        //Jump and Limits
+        rb.AddForce(transform.right * moveX + transform.forward * moveZ);
         rb.velocity = new Vector3(Mathf.Clamp(rb.velocity.x, -speed, speed), moveY, Mathf.Clamp(rb.velocity.z, -speed, speed));
 
         rotationX = Input.GetAxis("Mouse X") * playerCamera.sensitivity * Time.timeScale;
@@ -192,51 +196,99 @@ public class FirstPersonController : MonoBehaviour
     private void Interact()
     {
         if (!interactionObject) return;
-        if (interactionObject.TryGetComponent(out WeaponController weapon)) PickUpWeapon(weapon);
-        //else if (interactionObject.TryGetComponent(out DoorController door)) door.ChangeDoorState();
-        //else if (interactionObject.TryGetComponent(out ButtonController button)) button.PressButton();
-        //else if (interactionObject.TryGetComponent(out BarrelController barrel)) barrel.StartCoroutine(barrel.Explode(3));
+        if (interactionObject.TryGetComponent(out WeaponController weapon))
+        {
+            PickUpWeapon(weapon);
+        }
+        else if (interactionObject.TryGetComponent(out MeleeWeaponController meleeWeapon))
+        {
+            PickUpMeleeWeapon(meleeWeapon);
+        }
     }
 
     private void PickUpWeapon(WeaponController weapon)
     {
-        if (!interactionObject) return;
         if (curWeapon) DropWeapon();
         curWeapon = weapon;
         curWeapon.player = this;
         curWeapon.transform.SetParent(interaction.weaponPlace);
+        curWeapon.transform.localPosition = Vector3.zero;
+        curWeapon.transform.localRotation = Quaternion.identity;
         curWeapon.animator.enabled = true;
-        //curWeapon.transform.position = weapon.weaponPlace.position;
-        //curWeapon.transform.rotation = weapon.weaponPlace.rotation;
-        curWeapon.weaponRigidbody.isKinematic = true;
-        curWeapon.weaponCollider.enabled = false;
-        curWeapon.weaponOutline.enabled = false;
-        //interactionObject.layer = interaction.itemLayer;
+        curWeapon.DisablePhysics();
+        curWeapon.DisableOutline();
         interactionObject = null;
 
-        playerUI.ammoText.text = $"{curWeapon.ammoInMag} / {curWeapon.ammo}";
-        playerUI.ammoText.color = Color.white;
-        playerUI.crossHair.gameObject.SetActive(true);
-        playerUI.alternateCrossHair.gameObject.SetActive(true);
+        UpdateUI();
+    }
+
+    private void PickUpMeleeWeapon(MeleeWeaponController meleeWeapon)
+    {
+        if (curMeleeWeapon) DropMeleeWeapon();
+        curMeleeWeapon = meleeWeapon;
+        curMeleeWeapon.player = this;
+        curMeleeWeapon.transform.SetParent(interaction.weaponPlace);
+        curMeleeWeapon.transform.localPosition = Vector3.zero;
+        curMeleeWeapon.transform.localRotation = Quaternion.identity;
+        curMeleeWeapon.animator.enabled = true;
+        curMeleeWeapon.DisablePhysics();
+        curMeleeWeapon.DisableOutline();
+        interactionObject = null;
+
+        UpdateUI();
     }
 
     private void DropWeapon()
     {
-        if (!curWeapon) return;
-        curWeapon.animator.enabled = false;
-        curWeapon.transform.SetParent(null);
-        curWeapon.weaponRigidbody.isKinematic = false;
-        curWeapon.weaponCollider.enabled = true;
-        curWeapon.player = null;
-        curWeapon.weaponRigidbody.velocity = mainCamera.transform.forward * playerStats.throwingForce;
-        //curWeapon.gameObject.layer = interaction.interactionLayer;
-        curWeapon.animator.SetBool("Aim", false);
-        curWeapon.isReloading = false;
-        curWeapon = null;
-        playerUI.crossHair.gameObject.SetActive(false);
-        playerUI.alternateCrossHair.gameObject.SetActive(true);
-        playerUI.ammoText.text = "...";
-        playerUI.ammoText.color = Color.gray;
+        if (curWeapon)
+        {
+            curWeapon.animator.enabled = false;
+            curWeapon.transform.SetParent(null);
+            curWeapon.EnablePhysics();
+            curWeapon.player = null;
+            if (curWeapon.weaponRigidbody) curWeapon.weaponRigidbody.velocity = mainCamera.transform.forward * playerStats.throwingForce;
+            curWeapon.animator.SetBool("Aim", false);
+            curWeapon.isReloading = false;
+            curWeapon = null;
+        }
+        if (curMeleeWeapon)
+        {
+            DropMeleeWeapon();
+        }
+        UpdateUI();
+    }
+
+    private void DropMeleeWeapon()
+    {
+        if (!curMeleeWeapon) return;
+        curMeleeWeapon.animator.enabled = false;
+        curMeleeWeapon.transform.SetParent(null);
+        curMeleeWeapon.EnablePhysics();
+        curMeleeWeapon.player = null;
+        if (curMeleeWeapon.weaponRigidbody) curMeleeWeapon.weaponRigidbody.velocity = mainCamera.transform.forward * playerStats.throwingForce;
+        curMeleeWeapon = null;
+        UpdateUI();
+    }
+
+    public void UpdateUI()
+    {
+        if (curWeapon)
+        {
+            if (playerUI.ammoText) playerUI.ammoText.text = $"{curWeapon.ammoInMag} / {curWeapon.ammo}";
+            if (playerUI.ammoText) playerUI.ammoText.color = Color.white;
+            if (playerUI.crossHair) playerUI.crossHair.gameObject.SetActive(true);
+            if (playerUI.alternateCrossHair) playerUI.alternateCrossHair.gameObject.SetActive(true);
+        }
+        else
+        {
+            if (playerUI.ammoText)
+            {
+                playerUI.ammoText.text = "...";
+                playerUI.ammoText.color = Color.gray;
+            }
+            if (playerUI.crossHair) playerUI.crossHair.gameObject.SetActive(false);
+            if (playerUI.alternateCrossHair) playerUI.alternateCrossHair.gameObject.SetActive(curMeleeWeapon == null);
+        }
     }
 
     public void TakeDamage(float damage)
@@ -251,7 +303,7 @@ public class FirstPersonController : MonoBehaviour
 
     public void Die()
     {
-        Debug.Log("Player is DEAD");
+        Debug.Log("Игрок мертв!");
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

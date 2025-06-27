@@ -1,50 +1,37 @@
-﻿using System.Collections;
 using UnityEngine;
+using System.Collections;
 
 public class WeaponController : MonoBehaviour
 {
     public WeaponData weaponData;
-    public Transform firePoint;
+    public Transform shootPoint;
+    public Animator animator;
+    public Rigidbody weaponRigidbody;
+    public Collider weaponCollider;
+    public Outline weaponOutline;
+    public FirstPersonController player;
 
+    public float shootingSpread;
     public int ammoInMag;
     public int ammo;
-
-    [HideInInspector] public Animator animator;
-    [HideInInspector] public Rigidbody weaponRigidbody;
-    [HideInInspector] public Collider weaponCollider;
-    [HideInInspector] public Outline weaponOutline;
-    [HideInInspector] public bool isShooting = false;
-    [HideInInspector] public bool isReloading = false;
-    [HideInInspector] public float shootingSpread;
-    [HideInInspector] public FirstPersonController player;
-
-    private Transform mainCamera;
+    public bool isShooting;
+    public bool isReloading;
 
     // 🔊 Добавленные переменные для звука
     public AudioSource weaponAudioSource;
     public AudioClip shotSound;
+    private Transform mainCamera;
 
     private void Start()
     {
+        mainCamera=Camera.main.transform;
         animator = GetComponent<Animator>();
         weaponRigidbody = GetComponent<Rigidbody>();
         weaponCollider = GetComponent<Collider>();
         weaponOutline = GetComponent<Outline>();
-        mainCamera = Camera.main.transform;
-        ammo = weaponData.ammo;
         ammoInMag = weaponData.ammoInMag;
+        ammo = weaponData.ammo;
         shootingSpread = weaponData.shootingSpread;
-    }
-
-    private void FixedUpdate()
-    {
-        if (isShooting || !player) return;
-        if (!animator.GetBool("Aim"))
-        {
-            shootingSpread = Mathf.Clamp(shootingSpread - weaponData.shootingSpreadDecreaseValue, weaponData.shootingSpread, weaponData.maxShootingSpread);
-            float crossHairSize = ((PlayerUI.resolution.y / 100.0f) * shootingSpread) * 2;
-            player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
-        }
     }
 
     public void Shoot()
@@ -57,7 +44,7 @@ public class WeaponController : MonoBehaviour
 
         for (int i = 0; i < weaponData.bulletsPerShot; i++)
         {
-            GameObject curBullet = Instantiate(weaponData.bulletPrefab, firePoint.position, firePoint.rotation);
+            GameObject curBullet = Instantiate(weaponData.bulletPrefab, shootPoint.position, shootPoint.rotation);
             curBullet.transform.Rotate(Random.Range(-shootingSpread, shootingSpread), Random.Range(-shootingSpread, shootingSpread), 0);
             curBullet.GetComponent<Rigidbody>().velocity = curBullet.transform.forward * weaponData.bulletSpeed;
             curBullet.TryGetComponent(out BulletController bullet);
@@ -74,8 +61,18 @@ public class WeaponController : MonoBehaviour
             shootingSpread = Mathf.Clamp(shootingSpread + weaponData.shootingSpreadIncreaseValue, weaponData.shootingSpread, weaponData.maxShootingSpread);
             float crossHairSize = ((PlayerUI.resolution.y / 100.0f) * shootingSpread) * 2;
             player.playerUI.crossHair.sizeDelta = new Vector2(crossHairSize, crossHairSize);
+        if (ammoInMag <= 0) return;
+
+        ammoInMag--;
+        player.UpdateUI();
+
+        if (weaponData.shootSound)
+        {
+            AudioSource.PlayClipAtPoint(weaponData.shootSound, shootPoint.position);
         }
-        else
+
+        Ray ray = new Ray(shootPoint.position, shootPoint.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
             mainCamera.Rotate(-weaponData.verticalSpray, 0, 0);
             mainCamera.parent.Rotate(0, (Random.Range(0, 2) == 0 ? -weaponData.horizontalSpray.leftDirection : weaponData.horizontalSpray.rightDirection), 0);
@@ -91,6 +88,19 @@ public class WeaponController : MonoBehaviour
         {
             Invoke(nameof(Shoot), 60.0f / weaponData.fireRate);
         }
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                hit.collider.GetComponent<EnemyController>()?.TakeDamage(weaponData.damage);
+            }
+        }
+
+        StartCoroutine(ShootCooldown());
+    }
+
+    private IEnumerator ShootCooldown()
+    {
+        yield return new WaitForSeconds(weaponData.fireRate);
+        if (isShooting) Shoot();
     }
 
     public IEnumerator Reload()
@@ -109,6 +119,40 @@ public class WeaponController : MonoBehaviour
         ammo -= requiredAmmo;
 
         player.playerUI.ammoText.text = $"{ammoInMag} / {ammo}";
+        if (isReloading || ammo <= 0 || ammoInMag == weaponData.ammoInMag) yield break;
+
+        isReloading = true;
+        animator.SetTrigger("Reload");
+
+        yield return new WaitForSeconds(weaponData.reloadingDuration);
+
+        int ammoToReload = Mathf.Min(weaponData.ammoInMag - ammoInMag, ammo);
+        ammoInMag += ammoToReload;
+        ammo -= ammoToReload;
         isReloading = false;
+
+        player.UpdateUI();
+    }
+
+    public void EnablePhysics()
+    {
+        if (weaponRigidbody) weaponRigidbody.isKinematic = false;
+        if (weaponCollider) weaponCollider.enabled = true;
+    }
+
+    public void DisablePhysics()
+    {
+        if (weaponRigidbody) weaponRigidbody.isKinematic = true;
+        if (weaponCollider) weaponCollider.enabled = false;
+    }
+
+    public void EnableOutline()
+    {
+        if (weaponOutline) weaponOutline.enabled = true;
+    }
+
+    public void DisableOutline()
+    {
+        if (weaponOutline) weaponOutline.enabled = false;
     }
 }
