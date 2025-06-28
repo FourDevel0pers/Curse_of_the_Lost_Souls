@@ -6,7 +6,8 @@ public class PausePanelController : MonoBehaviour
 {
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private Animator crossFadeAnimator;
-
+    [SerializeField] private GameObject crosshair;
+    [SerializeField] private GameObject centerPoint;
     [HideInInspector] public bool canPause = true;
 
     private void Update()
@@ -21,6 +22,8 @@ public class PausePanelController : MonoBehaviour
         Time.timeScale = pausePanel.activeSelf ? 0f : 1f;
         Cursor.lockState = pausePanel.activeSelf ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = pausePanel.activeSelf;
+        crosshair.SetActive(!crosshair.activeSelf);
+        centerPoint.SetActive(!centerPoint.activeSelf);
     }
 
     public void OnResumeButtonClick()

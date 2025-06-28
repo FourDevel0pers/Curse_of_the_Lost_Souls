@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 16846d23da964df43bbebf6f38754f9c
+  - enabled: 1
     path: Assets/Scenes/PlaneCrash.unity
     guid: dbba14297cf9ab44093cf93a5bda76e6
   - enabled: 1

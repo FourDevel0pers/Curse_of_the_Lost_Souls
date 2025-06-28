@@ -39,6 +39,8 @@ public class MainMenuController : MonoBehaviour
     [Space(10)]
 
     [SerializeField] private List<string> tipTexts;
+    [HideInInspector] public bool canPause = true;
+    [SerializeField] private GameObject pausePanel;
 
     private AsyncOperation loadingProgress;
     private int frameScale = 30;
@@ -46,6 +48,14 @@ public class MainMenuController : MonoBehaviour
     private void Start()
     {
         Time.timeScale = 1.0f;
+    }
+
+    private void ChangePauseState()
+    {
+        pausePanel.SetActive(!pausePanel.activeSelf);
+        Time.timeScale = pausePanel.activeSelf ? 0f : 1f;
+        Cursor.lockState = pausePanel.activeSelf ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = pausePanel.activeSelf;
     }
 
     public void OnPlayButtonClick(int sceneIndex)
